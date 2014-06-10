@@ -1,7 +1,9 @@
 from jinja2 import Environment, PackageLoader
 import web
+import json
 
 env = Environment(loader=PackageLoader('broadgauge', 'templates'))
+env.filters['tojson'] = json.dumps
 
 def render_template(_filename, **kwargs):
     """Renders a template with given filename.

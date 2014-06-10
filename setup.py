@@ -7,6 +7,8 @@ setup(
     install_requries=[
         'web.py',
         'Jinja2',
+        'PyYAML',
+        'requests'
     ],
     packages=find_packages(),
     author='Anand Chitipothu',
