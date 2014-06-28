@@ -16,7 +16,11 @@ app = web.application(urls, globals())
 
 @context_processor
 def inject_user():
-    return dict(user=account.get_current_user())
+    return {
+        'user': account.get_current_user(),
+        
+        'site_title': web.config.get('site_title', 'Broad Gauge')
+    }
 
 class home:
     def GET(self):

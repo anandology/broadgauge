@@ -1,11 +1,18 @@
 
-function setup_browserid(currentUser) {
+function setup_browserid(options) {
+  var defaultOptions = {
+    currentUser: null,
+    siteName: 'Broad Guage'
+  };
+
+  options = $.extend({}, defaultOptions, options);   
+
   $(function() {
       $(".browserid-login").click(function() {
           var next = $(this).attr("href");
           if (!next || next[0] != "/")
             next = document.location.pathname + document.location.search;
-          navigator.id.request({'siteName': 'Python Month', 'returnTo': next});
+          navigator.id.request({'siteName': options.siteName, 'returnTo': next});
       });
       $(".browserid-logout").click(function() {
           navigator.id.logout(); 
@@ -13,7 +20,7 @@ function setup_browserid(currentUser) {
   });
 
   navigator.id.watch({
-    loggedInUser: currentUser,
+    loggedInUser: options.currentUser,
     onlogin: function(assertion) {
       // A user has logged in! Here you need to:
       // 1. Send the assertion to your backend for verification and to create a session.

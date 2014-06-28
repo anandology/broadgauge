@@ -26,14 +26,13 @@
       <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Python Month</a>
+          <a class="navbar-brand" href="#">{{ site_title }}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li><a href="#">About</a></li>
-            <li><a href="http://in.pycon.org/2014/">PyCon India 2014</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user %}
@@ -55,7 +54,6 @@
     <footer>
     <div class="container">
     {% block footer %}
-      <a href="http://python.org.in/">Python Software Society of India</a>
     {% endblock %}
     </div>
     </footer>
@@ -63,7 +61,10 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/browserid.js"></script>
     <script type="text/javascript">
-      setup_browserid({{user | tojson}});
+      setup_browserid({
+        currentUser: {{user | tojson}},
+        siteName: {{site_title | tojson}} 
+      }); 
     </script>
   </body>
 </html>
