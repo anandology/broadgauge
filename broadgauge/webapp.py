@@ -3,7 +3,6 @@ import web
 import yaml
 
 from .template import render_template, context_processor
-from . import forms
 from . import browserid, account
 
 web.config.debug = False
@@ -45,8 +44,6 @@ def main():
         configfile = sys.argv[index+1]
         sys.argv = sys.argv[:index] + sys.argv[index+2:]
         load_config(configfile)
-
-    load_config(configfile)
     app.run()
 
 if __name__ == '__main__':
