@@ -4,7 +4,7 @@ setup(
     name='broadgauge',
     version="0.1.0",
     license="BSD",
-    install_requries=[
+    install_requires=[
         'web.py',
         'Jinja2',
         'PyYAML',
