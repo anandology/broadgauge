@@ -37,9 +37,7 @@
           <ul class="nav navbar-nav navbar-right">
             {% if user %}
               <li><div style="padding: 15px 0px;">Welcome <strong>{{user}}</strong></div></li>
-              <li><a class="browserid-logout" href="javascript:;">Log Out</a></li>
-            {% else %}
-              <li><a class="browserid-login" href="javascript:;">Log In</a></li>
+              <li><a href="#">Log Out</a></li>
             {% endif %}
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -57,14 +55,6 @@
     {% endblock %}
     </div>
     </footer>
-    <script src="https://login.persona.org/include.js"></script>
     <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/browserid.js"></script>
-    <script type="text/javascript">
-      setup_browserid({
-        currentUser: {{user | tojson}},
-        siteName: {{site_title | tojson}} 
-      }); 
-    </script>
   </body>
 </html>
