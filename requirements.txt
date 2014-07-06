@@ -1,0 +1,6 @@
+Jinja2==2.7.3
+MarkupSafe==0.23
+PyYAML==3.11
+gunicorn==19.0.0
+web.py==0.37
+wsgiref==0.1.2
