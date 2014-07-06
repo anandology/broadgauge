@@ -26,7 +26,7 @@
       <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">{{ site_title }}</a>
+          <a class="navbar-brand" href="/">{{ site_title }}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -36,8 +36,11 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user %}
-              <li><div style="padding: 15px 0px;">Welcome <strong>{{user}}</strong></div></li>
-              <li><a href="#">Log Out</a></li>
+              <li><div style="padding: 15px 0px;">Welcome <strong>{{user.name}}</strong></div></li>
+              <li>
+                <form name="logout" method="POST" action="/logout" class="hidden"></form>
+                <a class="logout" href="javascript:;" onclick="document.forms.logout.submit();">Log Out</a>
+              </li>
             {% endif %}
           </ul>
         </div><!-- /.navbar-collapse -->
