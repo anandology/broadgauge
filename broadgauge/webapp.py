@@ -4,6 +4,7 @@ import yaml
 
 from . import account
 from . import oauth
+from . import forms
 from .models import Trainer
 from .template import render_template, context_processor
 
@@ -56,7 +57,7 @@ class github_oauth_callback:
     def GET(self):
         i = web.input(code=None)
         if i.code:
-            redirect_uri = get_oauth_redirect_url('github')
+            redirect_uri = get_oauth_redirect_url('github')            
             github = oauth.GitHub(redirect_uri)
             try:
                 session = github.get_auth_session(data={'code': i.code})
@@ -83,8 +84,11 @@ class trainer_signup:
         if account.get_current_user() is None:
             return self.GET()
 
-        else:
-            return "TODO: display signup form"
+        i = web.input()
+        form = forms.TrainerSignupForm(i)
+        if not form.validate():
+            return render_template("trainers/signup.html", form=form)
+        raise web.seeother("/")
 
 def get_oauth_redirect_url(provider):
     return "{home}/oauth/{provider}".format(home=web.ctx.home, provider=provider)
