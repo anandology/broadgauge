@@ -4,10 +4,13 @@ import web
 import yaml
 from . import default_settings
 
+
 def load_default_config():
     # take all vars defined in default_config
-    config = dict((k, v) for k, v in default_settings.__dict__.items() if not k.startswith("_"))
+    config = dict((k, v) for k, v in default_settings.__dict__.items()
+                  if not k.startswith("_"))
     web.config.update(config)
+
 
 def load_config_from_env():
     keys = [
@@ -34,6 +37,7 @@ application = web.httpserver.StaticMiddleware(application)
 def load_config_from_file(configfile):
     web.config.update(yaml.load(open(configfile)))
 
+
 def main():
     if "--config" in sys.argv:
         index = sys.argv.index("--config")
@@ -42,6 +46,7 @@ def main():
         load_config_from_file(configfile)
 
     webapp.app.run()
+
 
 if __name__ == '__main__':
     main()

@@ -7,6 +7,9 @@ env = Environment(loader=PackageLoader('broadgauge', 'templates'))
 env.filters['tojson'] = json.dumps
 env.filters['md5'] = lambda s: md5.md5(s).hexdigest()
 
+_context_processors = []
+
+
 def render_template(_filename, **kwargs):
     """Renders a template with given filename.
 
@@ -18,15 +21,16 @@ def render_template(_filename, **kwargs):
     template_vars.update(kwargs)
     return template.render(**template_vars)
 
+
 def _get_injected_vars():
-    if not 'injected_vars' in web.ctx:
+    if 'injected_vars' not in web.ctx:
         d = {}
         for cp in _context_processors:
             d.update(cp())
         web.ctx.injected_vars = d
     return web.ctx.injected_vars
 
-_context_processors = []
+
 def context_processor(f):
     """Utility to inject new variables automatically into the context
     of a template, like in Flask.

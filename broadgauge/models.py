@@ -1,11 +1,13 @@
 import web
 
+
 @web.memoize
 def get_db():
     if 'database_url' in web.config:
         return web.database(web.config.database_url)
     else:
         return web.database(**web.config.db_parameters)
+
 
 class ResultSet:
     """Iterator wrapper over database result.
@@ -34,6 +36,7 @@ class ResultSet:
         except StopIteration:
             return None
 
+
 class Model(web.storage):
     """Base model.
     """
@@ -54,6 +57,7 @@ class Model(web.storage):
         """
         return cls.where(**kw).list()
 
+
 class User(Model):
     TABLE = "users"
 
@@ -61,6 +65,7 @@ class User(Model):
     def new(cls, name, email, phone=None):
         id = get_db().insert("users", name=name, email=email, phone=phone)
         return cls.find(id=id)
+
 
 class Trainer(Model):
     """Model class for Trainer.
@@ -78,12 +83,16 @@ class Trainer(Model):
         w = 'user_id=users.id'
         if kw:
             w = w + ' AND ' + web.db.sqlwhere(kw)
-        result = get_db().select([cls.TABLE, 'users'], what='users.*, trainer.*', where=w)
+        result = get_db().select([cls.TABLE, 'users'],
+                                 what='users.*, trainer.*', where=w)
         return ResultSet(result, model=cls)
+
 
 class Organization(Model):
     TABLE = "organization"
+
     @classmethod
     def new(cls, name, city, admin_user, role):
-        id = get_db().insert("organization", name=name, city=city, admin_id=admin_user.id, admin_role=role)
+        id = get_db().insert("organization", name=name, city=city,
+                             admin_id=admin_user.id, admin_role=role)
         return cls.find(id=id)

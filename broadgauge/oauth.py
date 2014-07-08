@@ -7,11 +7,13 @@ import json
 
 logger = logging.getLogger(__name__)
 
+
 def oauth_service(service, redirect_uri):
     if service == 'github':
         return GitHub(redirect_uri)
     elif service == 'google':
         return Google(redirect_uri)
+
 
 class GitHub(OAuth2Service):
     """GitHub OAuth integration.
@@ -45,9 +47,11 @@ class GitHub(OAuth2Service):
         try:
             session = self.get_auth_session(data={'code': code})
             d = session.get('user').json()
-            return dict(name=d['name'], email=d['email'], github=d['login'], service='GitHub')
+            return dict(name=d['name'], email=d['email'], github=d['login'],
+                        service='GitHub')
         except KeyError, e:
-            logger.error("failed to get user data from github. Error: %s", str(e))
+            logger.error("failed to get user data from github. Error: %s",
+                         str(e))
 
 
 class Google(OAuth2Service):
@@ -84,8 +88,10 @@ class Google(OAuth2Service):
         and the auth code must be passed as argument.
         """
         try:
-            session = self.get_auth_session(data={'code': code}, decoder=json.loads)
+            session = self.get_auth_session(data={'code': code},
+                                            decoder=json.loads)
             d = session.get('userinfo').json()
             return dict(name=d['name'], email=d['email'], service='Google')
         except KeyError, e:
-            logger.error("failed to get user data from google. Error: %s", str(e), exc_info=True)
+            logger.error("failed to get user data from google. Error: %s",
+                         str(e), exc_info=True)

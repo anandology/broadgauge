@@ -8,7 +8,7 @@ from .models import Trainer, User, Organization
 from .template import render_template, context_processor
 from .flash import flash_processor, flash, get_flashed_messages
 
-#web.config.debug = False
+# web.config.debug = False
 
 urls = (
     "/", "home",
@@ -28,6 +28,7 @@ urls = (
 app = web.application(urls, globals())
 app.add_processor(flash_processor)
 
+
 @context_processor
 def inject_user():
     user_email = account.get_current_user()
@@ -41,6 +42,7 @@ def inject_user():
         'get_flashed_messages': get_flashed_messages
     }
 
+
 class home:
     def GET(self):
         email = account.get_current_user()
@@ -50,6 +52,7 @@ class home:
         else:
             return render_template("home.html")
 
+
 class dashboard:
     def GET(self):
         user = account.get_current_user()
@@ -57,11 +60,13 @@ class dashboard:
             raise web.seeother("/")
         return render_template("dashboard.html")
 
+
 class logout:
     def POST(self):
         account.logout()
         referer = web.ctx.env.get('HTTP_REFERER', '/')
         raise web.seeother(referer)
+
 
 class oauth_callback:
     def GET(self, service):
@@ -92,6 +97,7 @@ def get_oauth_data():
         except ValueError:
             pass
 
+
 class login:
     def GET(self):
         userdata = get_oauth_data()
@@ -101,15 +107,17 @@ class login:
                 account.set_login_cookie(user.email)
                 raise web.seeother("/dashboard")
             else:
-                return render_template("login.html", userdata=userdata, error=True)
+                return render_template("login.html", userdata=userdata,
+                                       error=True)
         else:
             return render_template("login.html", userdata=None)
+
 
 class trainer_signup:
     FORM = forms.TrainerSignupForm
     TEMPLATE = "trainers/signup.html"
 
-    def GET(self): 
+    def GET(self):
         form = self.FORM()
         userdata = get_oauth_data()
         if userdata:
@@ -146,6 +154,7 @@ class trainer_signup:
     def find_user(self, email):
         return Trainer.find(email=email)
 
+
 class org_signup(trainer_signup):
     FORM = forms.OrganizationSignupForm
     TEMPLATE = "orgs/signup.html"
@@ -160,12 +169,14 @@ class org_signup(trainer_signup):
         account.set_login_cookie(user.email)
         raise web.seeother("/orgs/{}".format(org.id))
 
+
 def get_oauth_redirect_url(provider):
     home = web.ctx.home
     if provider == 'google' and home == 'http://0.0.0.0:8080':
         # google doesn't like 0.0.0.0
         home = 'http://127.0.0.1:8080'
     return "{home}/oauth/{provider}".format(home=home, provider=provider)
+
 
 class signup_redirect:
     def GET(self, base, provider):
@@ -174,16 +185,19 @@ class signup_redirect:
         url = client.get_authorize_url(state=base)
         raise web.seeother(url)
 
+
 class signup_reset:
     def GET(self, base):
         # TODO: This should be a POST request, not GET
         web.setcookie("oauth", "", expires=-1)
         raise web.seeother(base)
 
+
 class org_list:
     def GET(self):
         orgs = Organization.findall()
         return render_template("orgs/index.html", orgs=orgs)
+
 
 class org_view:
     def GET(self, id):
@@ -192,10 +206,12 @@ class org_view:
             raise web.notfound()
         return render_template("orgs/view.html", org=org)
 
+
 class trainers_list:
     def GET(self):
         trainers = Trainer.findall()
         return render_template("trainers/index.html", trainers=trainers)
+
 
 class trainer_view:
     def GET(self, id):
