@@ -6,7 +6,8 @@
   {% for t in trainers %}
     <li>
         <a href="/trainers/{{t.id}}"><img src="http://www.gravatar.com/avatar/{{t.email | md5}}?s=30&d=mm" class="img-rounded"></a>
-        <strong><a href="/trainers/{{t.id}}">{{t.name}}</a></strong></div>
+        <strong><a href="/trainers/{{t.id}}">{{t.name}}</a></strong>
     </li>
   {% endfor %}
+</ul>
 {% endblock %}
