@@ -16,3 +16,9 @@ label span.small {
 .well .btn {
     margin: 5px;
 }
+
+ul.org-list li {
+    margin: 10px 0px;
+    border-top: 1px solid #ddd;
+    padding: 10px 0px;
+}

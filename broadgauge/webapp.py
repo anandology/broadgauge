@@ -20,6 +20,7 @@ urls = (
     "/oauth/(github|google)", "oauth_callback",
     "/orgs/signup", "org_signup",
     "/orgs/(\d+)", "org_view",
+    "/orgs", "org_list",
 )
 app = web.application(urls, globals())
 app.add_processor(flash_processor)
@@ -142,6 +143,11 @@ class org_signup(trainer_signup):
         org = Organization.new(name=i.name, city=i.city, admin_user=user, role=i.role)
         account.set_login_cookie(user.email)
         raise web.seeother("/orgs/{}".format(org.id))
+
+class org_list:
+    def GET(self):
+        orgs = Organization.findall()
+        return render_template("orgs/index.html", orgs=orgs)
 
 class org_view:
     def GET(self, id):
