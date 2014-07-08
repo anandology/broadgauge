@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Organizations</h1>
+
+<ul class="list-unstyled org-list">
+  {% for org in orgs %}
+    <li>
+      <div><strong><a href="/orgs/{{org.id}}">{{org.name}}</a></strong></div>
+      <div>{{org.city}}</div>
+    </li>
+  {% endfor %}
+{% endblock %}
