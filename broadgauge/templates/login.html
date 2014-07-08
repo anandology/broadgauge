@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Log In</h1>
+{% if error %}
+    <div class="alert alert-danger">
+        <p><a href="/login/reset" class="pull-right" style="color: inherit;">Sign out?</a>
+        You've been authenticated as <strong>{{userdata['email']}}</strong> via {{userdata['service']}}, but you are not a registered user.</p>
+        <p>Would you like to <a class="alert-link" href="/trainers/signup">sign up as a trainer</a> or <a class="alert-link" href="/orgs/signup">register an organization</a>?</p>
+    </div>
+{% else %}
+<div class="well">
+    Please log in using your Github or Google account.
+    <br/>
+    <br/>
+    <div>
+      <a href="/login/github" class="btn btn-primary">GitHub</a>
+      <a href="/login/google" class="btn btn-primary">Google</a>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

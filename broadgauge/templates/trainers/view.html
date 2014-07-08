@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-3">
+        <img src="http://www.gravatar.com/avatar/{{trainer.email | md5}}?s=200&d=mm" class="img-thumbnail">
+    </div>
+    <div class="col-md-9">
+        <h1>{{ trainer.name }}</h1>
+        <div><span class="glyphicon glyphicon-map-marker" style="color: #aaa;"></span> {{trainer.city}}</div>
+    </div>
+{% endblock %}
