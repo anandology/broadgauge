@@ -7,6 +7,7 @@ from . import oauth
 from . import forms
 from .models import Trainer
 from .template import render_template, context_processor
+from .flash import flash_processor, flash, get_flashed_messages
 
 web.config.debug = False
 
@@ -19,6 +20,7 @@ urls = (
     "/oauth/github", "github_oauth_callback",
 )
 app = web.application(urls, globals())
+app.add_processor(flash_processor)
 
 @context_processor
 def inject_user():
@@ -29,7 +31,8 @@ def inject_user():
     user = user_email and Trainer.find(email=user_email)
     return {
         'user': user,
-        'site_title': web.config.get('site_title', 'Broad Gauge')
+        'site_title': web.config.get('site_title', 'Broad Gauge'),
+        'get_flashed_messages': get_flashed_messages
     }
 
 class home:
