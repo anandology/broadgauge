@@ -1,7 +1,7 @@
 """Forms using WTF-forms.
 """
 import web
-from wtforms import Form, StringField, validators
+from wtforms import Form, StringField, TextAreaField, validators
 
 
 class MultiDict(web.storage):
@@ -32,3 +32,10 @@ class OrganizationSignupForm(BaseForm):
     name = StringField('Name', [validators.Required()])
     city = StringField('City', [validators.Required()])
     role = StringField('Role', [validators.Required()])
+
+class TrainerEditProfileForm(BaseForm):
+    name = StringField('Name', [validators.Required()])
+    bio = TextAreaField('Bio', [validators.Required()])
+    phone = StringField('Phone', [validators.Required()])
+    city = StringField('City', [validators.Required()])
+    website = StringField('Website', [validators.Required()])

@@ -16,6 +16,7 @@ urls = (
     "/login", "login",
     "/dashboard", "dashboard",
     "/trainers/signup", "trainer_signup",
+    "/settings/profile", "edit_trainer_profile",
     "(/trainers/signup|/orgs/signup|/login)/reset", "signup_reset",
     "(/trainers/signup|/orgs/signup|/login)/(github|google)", "signup_redirect",
     "/oauth/(github|google)", "oauth_callback",
@@ -154,7 +155,28 @@ class trainer_signup:
     def find_user(self, email):
         return Trainer.find(email=email)
 
+class edit_trainer_profile:
+    FORM = forms.TrainerEditProfileForm
+    TEMPLATE = "trainers/edit-profile.html"
+    def GET(self):
+        form = self.FORM()
+        email = account.get_current_user()
+        user = User.find(email=email)
+        trainer = Trainer.find(user_id = user.id)
+        return render_template(self.TEMPLATE, form=form, user=user, trainer=trainer)
 
+    def POST(self):
+        email = account.get_current_user()
+        user = User.find(email=email)
+        trainer = Trainer.find(user_id = user.id)
+        i = web.input()
+        form = self.FORM(i)
+        if not form.validate():
+            return render_template(self.TEMPLATE, form=form, user=user, trainer=trainer)
+        else:
+            trainer.update(user.id, city=form.city.data, bio=form.bio.data, website=form.website.data)
+
+        
 class org_signup(trainer_signup):
     FORM = forms.OrganizationSignupForm
     TEMPLATE = "orgs/signup.html"
