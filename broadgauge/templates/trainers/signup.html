@@ -5,15 +5,17 @@
 
 {% if not userdata %}
   <div class="well">
-    Please authenticate yourself using Github to sign up as trainer.
+    Please authenticate yourself using Github or Google to sign up as trainer.
     <br/>
     <br/>
-    <div><a href="/trainers/signup/github" class="btn btn-primary">GitHub</a>
+    <div>
+      <a href="/trainers/signup/github" class="btn btn-primary">GitHub</a>
+      <a href="/trainers/signup/google" class="btn btn-primary">Google</a>
     </div>
   </div>
 {% else %}
   <div class="well">
-    You've been authenticated as <strong>{{userdata['email']}}</strong> via GitHub. <a href="/trainers/signup/reset">Not you?</a>
+    You've been authenticated as <strong>{{userdata['email']}}</strong> via {{userdata['service']}}. <a href="/trainers/signup/reset">Not you?</a>
     <br/>
     <br/>
     Please fill the form below to complete the sign up process.

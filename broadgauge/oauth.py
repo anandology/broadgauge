@@ -3,8 +3,15 @@
 from rauth import OAuth2Service
 import web
 import logging
+import json
 
 logger = logging.getLogger(__name__)
+
+def oauth_service(service, redirect_uri):
+    if service == 'github':
+        return GitHub(redirect_uri)
+    elif service == 'google':
+        return Google(redirect_uri)
 
 class GitHub(OAuth2Service):
     """GitHub OAuth integration.
@@ -18,7 +25,6 @@ class GitHub(OAuth2Service):
             access_token_url='https://github.com/login/oauth/access_token',
             base_url='https://api.github.com/')
         self.redirect_uri = redirect_uri
-        print "github", redirect_uri
 
     def get_authorize_url(self, **params):
         params.setdefault('response_type', 'code')
@@ -39,6 +45,47 @@ class GitHub(OAuth2Service):
         try:
             session = self.get_auth_session(data={'code': code})
             d = session.get('user').json()
-            return dict(name=d['name'], email=d['email'], github=d['login'])
+            return dict(name=d['name'], email=d['email'], github=d['login'], service='GitHub')
         except KeyError, e:
             logger.error("failed to get user data from github. Error: %s", str(e))
+
+
+class Google(OAuth2Service):
+    """Google OAuth integration.
+    """
+    def __init__(self, redirect_uri):
+        print 'Google', redirect_uri
+        OAuth2Service.__init__(self,
+            client_id=web.config.google_client_id,
+            client_secret=web.config.google_client_secret,
+            name='google',
+            authorize_url='https://accounts.google.com/o/oauth2/auth',
+            access_token_url='https://accounts.google.com/o/oauth2/token',
+            base_url='https://www.googleapis.com/oauth2/v1/')
+        self.redirect_uri = redirect_uri
+
+    def get_authorize_url(self, **params):
+        params.setdefault('response_type', 'code')
+        params.setdefault('redirect_uri', self.redirect_uri)
+        params.setdefault('scope', 'profile email')
+        return OAuth2Service.get_authorize_url(self, **params)
+
+    def get_auth_session(self, **kwargs):
+        if 'data' in kwargs and isinstance(kwargs['data'], dict):
+            kwargs['data'].setdefault('redirect_uri', self.redirect_uri)
+            kwargs['data'].setdefault('grant_type', 'authorization_code')
+            print kwargs
+        return OAuth2Service.get_auth_session(self, **kwargs)
+
+    def get_userdata(self, code):
+        """Returns the relevant userdata from github.
+
+        This function must be called from githun oauth callback
+        and the auth code must be passed as argument.
+        """
+        try:
+            session = self.get_auth_session(data={'code': code}, decoder=json.loads)
+            d = session.get('userinfo').json()
+            return dict(name=d['name'], email=d['email'], service='Google')
+        except KeyError, e:
+            logger.error("failed to get user data from google. Error: %s", str(e), exc_info=True)

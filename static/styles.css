@@ -12,3 +12,7 @@ label span.small {
   font-weight: normal;
   color: #737373;
 }
+
+.well .btn {
+    margin: 5px;
+}

@@ -15,9 +15,9 @@ urls = (
     "/logout", "logout",
     "/dashboard", "dashboard",
     "/trainers/signup", "trainer_signup",
-    "/trainers/signup/reset", "trainer_signup_reset",
-    "(/(?:trainers|orgs)/signup)/(github)", "signup_redirect",
-    "/oauth/github", "github_oauth_callback",
+    "(/(?:trainers|orgs)/signup)/reset", "signup_reset",
+    "(/(?:trainers|orgs)/signup)/(github|google)", "signup_redirect",
+    "/oauth/(github|google)", "oauth_callback",
     "/orgs/signup", "org_signup",
     "/orgs/(\d+)", "org_view",
 )
@@ -59,13 +59,13 @@ class logout:
         referer = web.ctx.env.get('HTTP_REFERER', '/')
         raise web.seeother(referer)
 
-class github_oauth_callback:
-    def GET(self):
+class oauth_callback:
+    def GET(self, service):
         i = web.input(code=None, state="/")
         if i.code:
-            redirect_uri = get_oauth_redirect_url('github')            
-            github = oauth.GitHub(redirect_uri)
-            userdata = github.get_userdata(i.code)
+            redirect_uri = get_oauth_redirect_url(service)
+            client = oauth.oauth_service(service, redirect_uri)
+            userdata = client.get_userdata(i.code)
             if userdata:
                 # login or signup
                 t = Trainer.find(email=userdata['email'])
@@ -151,20 +151,22 @@ class org_view:
         return render_template("orgs/view.html", org=org)
 
 def get_oauth_redirect_url(provider):
-    return "{home}/oauth/{provider}".format(home=web.ctx.home, provider=provider)
+    home = web.ctx.home
+    if provider == 'google' and home == 'http://0.0.0.0:8080':
+        # google doesn't like 0.0.0.0
+        home = 'http://127.0.0.1:8080'
+    return "{home}/oauth/{provider}".format(home=home, provider=provider)
 
 class signup_redirect:
     def GET(self, base, provider):
-        if provider == 'github':
-            redirect_uri = get_oauth_redirect_url('github')
-            github = oauth.GitHub(redirect_uri)
-            url = github.get_authorize_url(state=base)
-            raise web.seeother(url)
-        else:
-            raise web.seeother(base)
+        redirect_uri = get_oauth_redirect_url(provider)
+        print (base, provider, redirect_uri)
+        client = oauth.oauth_service(provider, redirect_uri)
+        url = client.get_authorize_url(state=base)
+        raise web.seeother(url)
 
-class trainer_signup_reset:
-    def GET(self):
+class signup_reset:
+    def GET(self, base):
         # TODO: This should be a POST request, not GET
-        web.setcookie("github", "", expires=-1)
-        raise web.seeother("/trainers/signup")
+        web.setcookie("oauth", "", expires=-1)
+        raise web.seeother(base)
