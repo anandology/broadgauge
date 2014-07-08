@@ -22,6 +22,8 @@ urls = (
     "/orgs/signup", "org_signup",
     "/orgs/(\d+)", "org_view",
     "/orgs", "org_list",
+    "/trainers", "trainers_list",
+    "/trainers/(\d+)", "trainer_view",
 )
 app = web.application(urls, globals())
 app.add_processor(flash_processor)
@@ -158,18 +160,6 @@ class org_signup(trainer_signup):
         account.set_login_cookie(user.email)
         raise web.seeother("/orgs/{}".format(org.id))
 
-class org_list:
-    def GET(self):
-        orgs = Organization.findall()
-        return render_template("orgs/index.html", orgs=orgs)
-
-class org_view:
-    def GET(self, id):
-        org = Organization.find(id=id)
-        if not org:
-            raise web.notfound()
-        return render_template("orgs/view.html", org=org)
-
 def get_oauth_redirect_url(provider):
     home = web.ctx.home
     if provider == 'google' and home == 'http://0.0.0.0:8080':
@@ -189,3 +179,27 @@ class signup_reset:
         # TODO: This should be a POST request, not GET
         web.setcookie("oauth", "", expires=-1)
         raise web.seeother(base)
+
+class org_list:
+    def GET(self):
+        orgs = Organization.findall()
+        return render_template("orgs/index.html", orgs=orgs)
+
+class org_view:
+    def GET(self, id):
+        org = Organization.find(id=id)
+        if not org:
+            raise web.notfound()
+        return render_template("orgs/view.html", org=org)
+
+class trainers_list:
+    def GET(self):
+        trainers = Trainer.findall()
+        return render_template("trainers/index.html", trainers=trainers)
+
+class trainer_view:
+    def GET(self, id):
+        trainer = Trainer.find(user_id=id)
+        if not trainer:
+            raise web.notfound()
+        return render_template("trainers/view.html", trainer=trainer)
