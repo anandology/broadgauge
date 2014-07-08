@@ -121,14 +121,13 @@ class trainer_signup:
         return render_template(self.TEMPLATE, form=form, userdata=userdata)
 
     def POST(self):
-        userdata = self.get_userdata()
+        userdata = get_oauth_data()
         if not userdata:
             return self.GET()
 
         i = web.input()
         form = self.FORM(i)
         if not form.validate():
-            print "validation failed", i
             return render_template(self.TEMPLATE, form=form)
         return self.signup(i, userdata)
 
