@@ -24,3 +24,7 @@ class TrainerSignupForm(BaseForm):
     city = StringField('City', [validators.Required()])
     # No need to have email as it is alreday available from session
 
+class OrganizationSignupForm(BaseForm):
+    name = StringField('Name', [validators.Required()])
+    city = StringField('City', [validators.Required()])
+    role = StringField('Role', [validators.Required()])

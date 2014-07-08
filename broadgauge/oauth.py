@@ -39,6 +39,6 @@ class GitHub(OAuth2Service):
         try:
             session = self.get_auth_session(data={'code': code})
             d = session.get('user').json()
-            return dict(name=d['name'], email=d['email'], login=d['login'])            
+            return dict(name=d['name'], email=d['email'], github=d['login'])
         except KeyError, e:
             logger.error("failed to get user data from github. Error: %s", str(e))
