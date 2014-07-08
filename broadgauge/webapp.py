@@ -228,6 +228,7 @@ class org_view:
         org = Organization.find(id=id)
         if not org:
             raise web.notfound()
+   
         return render_template("orgs/view.html", org=org)
 
 
