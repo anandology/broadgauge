@@ -54,11 +54,24 @@ class Model(web.storage):
         """
         return cls.where(**kw).list()
 
+class User(Model):
+    TABLE = "users"
+
 class Trainer(Model):
     """Model class for Trainer.
     """
     TABLE = "trainer"
+
     @classmethod
-    def new(cls, name, email):
-        id = get_db().insert("trainer", name=name, email=email)
+    def new(cls, name, email, phone, city, **kw):
+        id = get_db().insert("users", name=name, email=email, phone=phone)
+        get_db().insert('trainer', user_id=id, city=city, seqname=False, **kw)
         return cls.find(id=id)
+
+    @classmethod
+    def where(cls, **kw):
+        w = 'user_id=users.id'
+        if kw:
+            w = w + ' AND ' + web.db.sqlwhere(kw)
+        result = get_db().select([cls.TABLE, 'users'], what='users.*, trainer.*', where=w)
+        return ResultSet(result, model=cls)
