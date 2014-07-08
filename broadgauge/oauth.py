@@ -1,11 +1,14 @@
-"""OAuth integration for web.py.
-
-This will be made a separate project once it is ready.
+"""OAuth integration.
 """
 from rauth import OAuth2Service
 import web
+import logging
+
+logger = logging.getLogger(__name__)
 
 class GitHub(OAuth2Service):
+    """GitHub OAuth integration.
+    """
     def __init__(self, redirect_uri):
         OAuth2Service.__init__(self, 
             client_id=web.config.github_client_id,
@@ -26,3 +29,16 @@ class GitHub(OAuth2Service):
         if 'data' in kwargs and isinstance(kwargs['data'], dict):
             kwargs['data'].setdefault('redirect_uri', self.redirect_uri)
         return OAuth2Service.get_auth_session(self, **kwargs)
+
+    def get_userdata(self, code):
+        """Returns the relevant userdata from github.
+
+        This function must be called from githun oauth callback
+        and the auth code must be passed as argument.
+        """
+        try:
+            session = self.get_auth_session(data={'code': code})
+            d = session.get('user').json()
+            return dict(name=d['name'], email=d['email'], login=d['login'])            
+        except KeyError, e:
+            logger.error("failed to get user data from github. Error: %s", str(e))

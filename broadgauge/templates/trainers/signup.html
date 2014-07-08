@@ -3,22 +3,36 @@
 {% block content %}
 <h1>Sign Up As a Trainer</h1>
 
-<p>Sign up instantly using:</p>
+{% if not userdata %}
+  <div class="well">
+    Please authenticate yourself using Github to sign up as trainer.
+    <br/>
+    <br/>
+    <div><a href="/trainers/signup/github" class="btn btn-primary">GitHub</a>
+    </div>
+  </div>
+{% else %}
+  <div class="well">
+    You've been authenticated as <strong>{{userdata['email']}}</strong> via GitHub. <a href="/trainers/signup/reset">Not you?</a>
+    <br/>
+    <br/>
+    Please fill the form below to complete the sign up process.
+  </div>
 
-<ul class="list-unstyled">
-  <li><a class="btn btn-primary signup-github" href="/trainers/signup/github">GitHub</a></li>
-</ul>
-
-{% if False %}
   <form role="form" method="POST" style="max-width: 400px;">
     {{ render_field(form.name) }}
+
     <div class="form-group">
       <label for="email">Email address</label>
-      <input type="email" class="form-control" id="email" value="{{ user }}" disabled>
+      <input type="email" class="form-control" id="email" value="{{userdata['email']}}" disabled>
     </div>
     {{ render_field(form.phone) }}
     {{ render_field(form.city) }}
-    <button type="submit" class="btn btn-default">Sign Up</button>
-  </form>{% endif %}
-    
+
+    <button type="submit" class="btn btn-default">Sign Up</button>    
+  </form>
+
+{% endif %}
+
 {% endblock %}
+

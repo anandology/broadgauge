@@ -1,6 +1,5 @@
-import sys
 import web
-import yaml
+import json
 
 from . import account
 from . import oauth
@@ -9,13 +8,14 @@ from .models import Trainer
 from .template import render_template, context_processor
 from .flash import flash_processor, flash, get_flashed_messages
 
-web.config.debug = False
+#web.config.debug = False
 
 urls = (
     "/", "home",
     "/logout", "logout",
     "/dashboard", "dashboard",
     "/trainers/signup", "trainer_signup",
+    "/trainers/signup/reset", "trainer_signup_reset",
     "/trainers/signup/(github)", "trainer_signup_redirect",
     "/oauth/github", "github_oauth_callback",
 )
@@ -62,36 +62,55 @@ class github_oauth_callback:
         if i.code:
             redirect_uri = get_oauth_redirect_url('github')            
             github = oauth.GitHub(redirect_uri)
-            try:
-                session = github.get_auth_session(data={'code': i.code})
-                userdata = session.get('user').json()
-            except KeyError:
-                raise web.redirect("/trainers/signup")
-            self.login(userdata)
-            return web.redirect("/dashboard")
+            userdata = github.get_userdata(i.code)
+            if userdata:
+                # login or signup
+                t = Trainer.find(email=userdata['email'])
+                if t:
+                    account.set_login_cookie(t.email)
+                    raise web.seeother("/dashboard")
+                else:
+                    web.setcookie("github", json.dumps(userdata))
+                    raise web.seeother("/trainers/signup")
 
-        # TODO: set error message
-        raise web.redirect("/trainers/signup")
-
-    def login(self, userdata):
-        trainer = Trainer.find(email=userdata['email'])
-        if not trainer:
-            trainer = Trainer.new(name=userdata['name'], email=userdata['email'])
-        account.set_login_cookie(trainer['email'])
+        flash("Authorization failed, please try again.", category="error")
+        raise web.seeother("/trainers/signup")
 
 class trainer_signup:
-    def GET(self):
-        return render_template("trainers/signup.html")
+    def GET(self): 
+        form = forms.TrainerSignupForm()
+        userdata = self.get_userdata()
+        if userdata:
+            # if already logged in, send him to dashboard
+            t = Trainer.find(email=userdata['email'])
+            if t:
+                account.set_login_cookie(t.email)
+                raise web.seeother("/dashboard")
+
+            form.name.value = userdata['name']
+        return render_template("trainers/signup.html", form=form, userdata=userdata)
+
+    def get_userdata(self):
+        userdata_json = web.cookies().get('github')
+        if userdata_json:
+            try:
+                return json.loads(userdata_json)
+            except ValueError:
+                pass
 
     def POST(self):
-        if account.get_current_user() is None:
+        userdata = self.get_userdata()
+        if not userdata:
             return self.GET()
 
         i = web.input()
         form = forms.TrainerSignupForm(i)
         if not form.validate():
             return render_template("trainers/signup.html", form=form)
-        raise web.seeother("/")
+
+        t = Trainer.new(name=i.name, email=userdata['email'], phone=i.phone, city=i.city, github=userdata['login'])
+        account.set_login_cookie(t.email)
+        raise web.seeother("/dashboard")
 
 def get_oauth_redirect_url(provider):
     return "{home}/oauth/{provider}".format(home=web.ctx.home, provider=provider)
@@ -106,16 +125,8 @@ class trainer_signup_redirect:
         else:
             raise web.seeother("/trainers/signup")
 
-def load_config(configfile):
-    web.config.update(yaml.load(open(configfile)))
-
-def main():
-    if "--config" in sys.argv:
-        index = sys.argv.index("--config")
-        configfile = sys.argv[index+1]
-        sys.argv = sys.argv[:index] + sys.argv[index+2:]
-        load_config(configfile)
-    app.run()
-
-if __name__ == '__main__':
-    main()
+class trainer_signup_reset:
+    def GET(self):
+        # TODO: This should be a POST request, not GET
+        web.setcookie("github", "", expires=-1)
+        raise web.seeother("/trainers/signup")
