@@ -13,10 +13,11 @@ from .flash import flash_processor, flash, get_flashed_messages
 urls = (
     "/", "home",
     "/logout", "logout",
+    "/login", "login",
     "/dashboard", "dashboard",
     "/trainers/signup", "trainer_signup",
-    "(/(?:trainers|orgs)/signup)/reset", "signup_reset",
-    "(/(?:trainers|orgs)/signup)/(github|google)", "signup_redirect",
+    "(/trainers/signup|/orgs/signup|/login)/reset", "signup_reset",
+    "(/trainers/signup|/orgs/signup|/login)/(github|google)", "signup_redirect",
     "/oauth/(github|google)", "oauth_callback",
     "/orgs/signup", "org_signup",
     "/orgs/(\d+)", "org_view",
@@ -80,13 +81,35 @@ class oauth_callback:
         flash("Authorization failed, please try again.", category="error")
         raise web.seeother(i.state)
 
+
+def get_oauth_data():
+    userdata_json = web.cookies().get('oauth')
+    if userdata_json:
+        try:
+            return json.loads(userdata_json)
+        except ValueError:
+            pass
+
+class login:
+    def GET(self):
+        userdata = get_oauth_data()
+        if userdata:
+            user = User.find(email=userdata['email'])
+            if user:
+                account.set_login_cookie(user.email)
+                raise web.seeother("/dashboard")
+            else:
+                return render_template("login.html", userdata=userdata, error=True)
+        else:
+            return render_template("login.html", userdata=None)
+
 class trainer_signup:
     FORM = forms.TrainerSignupForm
     TEMPLATE = "trainers/signup.html"
 
     def GET(self): 
         form = self.FORM()
-        userdata = self.get_userdata()
+        userdata = get_oauth_data()
         if userdata:
             # if already logged in, send him to dashboard
             user = self.find_user(email=userdata['email'])
@@ -96,14 +119,6 @@ class trainer_signup:
 
             form.name.value = userdata['name']
         return render_template(self.TEMPLATE, form=form, userdata=userdata)
-
-    def get_userdata(self):
-        userdata_json = web.cookies().get('oauth')
-        if userdata_json:
-            try:
-                return json.loads(userdata_json)
-            except ValueError:
-                pass
 
     def POST(self):
         userdata = self.get_userdata()
@@ -166,7 +181,6 @@ def get_oauth_redirect_url(provider):
 class signup_redirect:
     def GET(self, base, provider):
         redirect_uri = get_oauth_redirect_url(provider)
-        print (base, provider, redirect_uri)
         client = oauth.oauth_service(provider, redirect_uri)
         url = client.get_authorize_url(state=base)
         raise web.seeother(url)

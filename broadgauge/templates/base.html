@@ -42,6 +42,8 @@
                 <form name="logout" method="POST" action="/logout" class="hidden"></form>
                 <a class="logout" href="javascript:;" onclick="document.forms.logout.submit();">Log Out</a>
               </li>
+            {% else %}
+              <li><a href="/login">Log In</a>
             {% endif %}
           </ul>
         </div><!-- /.navbar-collapse -->
