@@ -66,8 +66,11 @@ class User(Model):
         id = get_db().insert("users", name=name, email=email, phone=phone)
         return cls.find(id=id)
 
+    def update(self, **kw):
+        get_db().update("users", where='id=$id', vars=self, **kw)
+        dict.update(self, kw)
 
-class Trainer(Model):
+class Trainer(User):
     """Model class for Trainer.
     """
     TABLE = "trainer"
@@ -88,7 +91,15 @@ class Trainer(Model):
         return ResultSet(result, model=cls)
 
     def update(self, **kw):
-        pass
+        keys = ['name', 'email', 'phone']
+        d1 = dict((k, v) for k, v in kw.items() if k in keys)
+        d2 = dict((k, v) for k, v in kw.items() if k not in keys)
+
+        db = get_db()
+        with db.transaction():
+            User.update(self, **d1)
+            db.update('trainer', where='user_id=$user_id', vars=self, **d2)
+        dict.update(self, d2)
 
 class Organization(Model):
     TABLE = "organization"
