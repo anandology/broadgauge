@@ -10,3 +10,9 @@ google_client_id = '360651067559-f04a4e5scoa0bgau2tar06q05jeg5j2n.apps.googleuse
 google_client_secret = 'CI8Pl4jSmsK5gbFRa9dfio1E'
 
 db_parameters = dict(dbn='postgres', db='pythonexpress')
+
+# These are settings for sending mails
+smtp = "smtp.googlemail.com"
+smtp_credentials = {'login':'from@example.com',
+              'password':'password', 'tls':True}
+from_email = "from_email@example.com"
