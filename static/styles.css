@@ -23,3 +23,14 @@ ul.org-list li {
     border-top: 1px solid #ddd;
     padding: 10px 0px;
 }
+
+.vcard .octicon {
+    width: 16px;
+    text-align: center;
+    color: #ccc;
+}
+
+.vcard li {
+    padding: 2px 0px;
+
+}

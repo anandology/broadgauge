@@ -2,18 +2,26 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-md-3">
-        <img src="http://www.gravatar.com/avatar/{{trainer.email | md5}}?s=200&d=mm" class="img-thumbnail">
-    </div>
-    <div class="col-md-9">
-        <h1>{{ trainer.name }}</h1>
-        <div><span class="glyphicon glyphicon-map-marker" style="color: #aaa;"></span> {{trainer.city}}</div>
-        {% if trainer.github %}
-            <div>
-                <span class="octicon octicon-mark-github"></span>
-                <a href="https://github.com/{{trainer.github}}">{{trainer.github}}</a>
-            </div>
-        {% endif %}    
-    </div>
+  <div class="col-md-3">
+    <img src="http://www.gravatar.com/avatar/{{trainer.email | md5}}?s=200&d=mm" class="img-thumbnail">
+  </div>
+  <div class="col-md-9">
+    <h1>{{ trainer.name }}</h1>
+    <ul class="list-unstyled vcard">
+      <li><span class="octicon octicon-location"></span> {{trainer.city}}</li>
+      {% if trainer.github %}
+        <li>
+          <span class="octicon octicon-mark-github"></span>
+          <a href="https://github.com/{{trainer.github}}">{{trainer.github}}</a>
+        </li>
+      {% endif %}    
+      {% if trainer.website %}
+        <li>
+          <span class="octicon octicon-link"></span>
+          <a href="{{trainer.website}}">{{trainer.website}}</a>
+        </li>
+      {% endif %}    
+    </ul>
+  </div>
 </div>
 {% endblock %}
