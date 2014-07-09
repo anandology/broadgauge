@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Trainers</h1>
+
+<div class="row">
+  {% for t in trainers %}
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="http://www.gravatar.com/avatar/{{ t.email.lower() | md5 }}?s=200">
+      <div class="caption">
+        <h3>{{ t.name }}</h3>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

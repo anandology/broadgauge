@@ -1,0 +1,11 @@
+{% macro show_flashed_messages() %}
+  {% set flashed_messages = get_flashed_messages() %}
+  {% if flashed_messages %}
+    <div class="flash-messges">
+      {% for f in get_flashed_messages() %}
+        {% set cat = dict(error="danger").get(f.category, f.category) %}
+        <div class="alert alert-{{cat}}">{{f.message}}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
