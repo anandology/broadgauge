@@ -159,23 +159,25 @@ class edit_trainer_profile:
     FORM = forms.TrainerEditProfileForm
     TEMPLATE = "trainers/edit-profile.html"
     def GET(self):
-        form = self.FORM()
         email = account.get_current_user()
-        user = User.find(email=email)
-        trainer = Trainer.find(user_id = user.id)
-        return render_template(self.TEMPLATE, form=form, user=user, trainer=trainer)
+        user = Trainer.find(email=email)
+        if not user:
+            raise web.seeother("/")
+        form = forms.TrainerEditProfileForm(user)
+        return render_template(self.TEMPLATE, form=form, user=user)
 
     def POST(self):
         email = account.get_current_user()
-        user = User.find(email=email)
-        trainer = Trainer.find(user_id = user.id)
+        user = Trainer.find(email=email)
+        if not user:
+            raise web.seeother("/")
         i = web.input()
         form = self.FORM(i)
         if not form.validate():
-            return render_template(self.TEMPLATE, form=form, user=user, trainer=trainer)
+            return render_template(self.TEMPLATE, form=form, user=user)
         else:
-            trainer.update(user.id, city=form.city.data, bio=form.bio.data, website=form.website.data)
-
+            user.update(name=i.name, city=i.city, phone=i.phone, website=i.website, bio=i.bio)
+            raise web.seeother("/dashboard")
         
 class org_signup(trainer_signup):
     FORM = forms.OrganizationSignupForm

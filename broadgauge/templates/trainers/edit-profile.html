@@ -2,17 +2,15 @@
 
 {% extends "base.html" %}
 {% block content %}
-<h1>{{user.name}} </h1>
-<h2>Edit Profile:</h2>
+<h1>Settings / Profile</h1>
 <form role="form" method="POST" style="max-width: 400px;">
     {{ render_field(form.name) }}
     {{ render_field(form.phone) }}
     {{ render_field(form.city) }}
     {{ render_field(form.website) }}
     {{ render_field(form.bio) }}
-<button type="submit" class="btn btn-default">Sign Up</button>
+    <button type="submit" class="btn btn-default">Save</button>
 </form>
-
 
 
 {% endblock %}

@@ -87,8 +87,7 @@ class Trainer(Model):
                                  what='users.*, trainer.*', where=w)
         return ResultSet(result, model=cls)
 
-    @classmethod
-    def update(cls, id, **kw):
+    def update(self, **kw):
         pass
 
 class Organization(Model):

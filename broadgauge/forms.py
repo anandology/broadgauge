@@ -35,7 +35,7 @@ class OrganizationSignupForm(BaseForm):
 
 class TrainerEditProfileForm(BaseForm):
     name = StringField('Name', [validators.Required()])
-    bio = TextAreaField('Bio', [validators.Required()])
     phone = StringField('Phone', [validators.Required()])
     city = StringField('City', [validators.Required()])
-    website = StringField('Website', [validators.Required()])
+    website = StringField('Website', [])
+    bio = TextAreaField('Bio', [])
