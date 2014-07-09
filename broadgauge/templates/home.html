@@ -1,9 +1,16 @@
 {% extends "base.html" %}
-{% block content %}
-<div class="jumbotron">
-  <h1 style="font-size: 48px;">Welcome to Python Express</h2>
-  <p>After conducting 100+ Python workshops across India last year, <a href="http://in.pycon.org/2013/python-month">Python Month</a> is back again this year as Python Express.</p>
 
+{% block content_wrapper %}
+<div style="background-color: #C8E0EF">
+  <div class="container">
+    <div class="jumbotron" style="background-color: inherit;">
+      <h1 style="font-size: 48px;">Welcome to Python Express</h2>
+      <p>After conducting 100+ Python workshops across India last year, <a href="http://in.pycon.org/2013/python-month">Python Month</a> is back again this year as Python Express.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
   <div class="row">
     <div class="col-md-6">
         <h2>Are you a professor or student?</h2>
@@ -19,4 +26,9 @@
     </div>
   </div>
 </div>
+<style type="text/css">
+  .navbar {
+    margin-bottom: 0px !important;
+  }
+</style>
 {% endblock %}

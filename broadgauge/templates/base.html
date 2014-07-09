@@ -52,27 +52,35 @@
     </nav>
 
     <div class="container">
-    {% block flash_messages %}
-      {% set flashed_messages = get_flashed_messages() %}
-      {% if flashed_messages %}
-        <div class="flash-messges">
-          {% for f in get_flashed_messages() %}
-            {% set cat = dict(error="danger").get(f.category, f.category) %}
-            <div class="alert alert-{{cat}}">{{f.message}}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endblock %}
-
-    {% block content %}
-    {% endblock %}
+      {% block flash_messages %}
+        {% set flashed_messages = get_flashed_messages() %}
+        {% if flashed_messages %}
+          <div class="flash-messges">
+            {% for f in get_flashed_messages() %}
+              {% set cat = dict(error="danger").get(f.category, f.category) %}
+              <div class="alert alert-{{cat}}">{{f.message}}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endblock %}
     </div>
+
+    {% block content_wrapper %}
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+      </div>
+    {% endblock %}
 
     <footer>
-    <div class="container">
-    {% block footer %}
-    {% endblock %}
-    </div>
+      <div class="container">
+        {% block footer %}
+          &copy; 2014 <a href="http://python.org.in/">Python Software Society of India</a>
+          <div class="pull-right">
+            <a href="https://twitter.com/pythonexpress">@pythonexpress</a>
+          </div>
+        {% endblock %}
+      </div>
     </footer>
     <script src="/static/js/jquery.min.js"></script>
   </body>
