@@ -9,8 +9,10 @@
         <h1>{{ trainer.name }}</h1>
         <div><span class="glyphicon glyphicon-map-marker" style="color: #aaa;"></span> {{trainer.city}}</div>
         {% if trainer.github %}
-            <div><span>Github Profile: <a href="https://github.com/{{trainer.github}}">https://github.com/{{trainer.github}}
-            </a><span></div>
+            <div>
+                <span class="octicon octicon-mark-github"></span>
+                <a href="https://github.com/{{trainer.github}}">{{trainer.github}}</a>
+            </div>
         {% endif %}    
     </div>
 </div>
