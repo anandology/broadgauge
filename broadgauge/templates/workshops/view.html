@@ -1,0 +1,13 @@
+{% set org = workshop.get_org() %}
+
+{% extends "orgs/view.html" %}
+{% block org_content %}
+<h1>{{ workshop.title }}</h1>
+<div>
+  <span class="octicon octicon-calendar"></span>
+  <span>{{ workshop.date }}</span>
+</div>
+
+{{ workshop.description }}
+
+{% endblock %}

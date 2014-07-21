@@ -9,3 +9,31 @@
     </div>
   {% endif %}
 {% endmacro %}
+
+{% macro workshop_preview(workshop) %}
+  <div class="workshop">
+    {% set org = workshop.get_org() %}
+    <h3 class="workshop-title"><a href="/workshops/{{ workshop.id }}">{{ workshop.title }}</a></h3>
+    <div class="workshop-venue">
+      <span class="octicon octicon-location"></span>
+      <span class="workshop-org">{{ org.name }}</span>,
+      <span class="city">{{ org.city }}</span>
+    </div>
+    <div class="workshop-date">
+      <span class="octicon octicon-calendar"></span>
+      <span>{{ workshop.date }}</span>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro workshop_list(workshops) %}
+  {% if workshops %}
+    <ul class="list-unstyled">
+      {% for w in workshops %}
+        <li>{{ workshop_preview(w) }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <em>None found.</em>
+  {% endif %}
+{% endmacro %}

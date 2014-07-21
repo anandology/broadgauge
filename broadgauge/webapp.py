@@ -4,7 +4,7 @@ import json
 from . import account
 from . import oauth
 from . import forms
-from .models import Trainer, User, Organization
+from .models import Trainer, User, Organization, Workshop
 from .template import render_template, context_processor
 from .flash import flash_processor, flash, get_flashed_messages
 
@@ -21,10 +21,12 @@ urls = (
     "(/trainers/signup|/orgs/signup|/login)/(github|google)", "signup_redirect",
     "/oauth/(github|google)", "oauth_callback",
     "/orgs/signup", "org_signup",
+    "/orgs/(\d+)/new-workshop", "new_workshop",
     "/orgs/(\d+)", "org_view",
     "/orgs", "org_list",
     "/trainers", "trainers_list",
     "/trainers/(\d+)", "trainer_view",
+    "/workshops/(\d+)", "workshop_view",
 )
 app = web.application(urls, globals())
 app.add_processor(flash_processor)
@@ -51,7 +53,11 @@ class home:
         if user:
             raise web.seeother("/dashboard")
         else:
-            return render_template("home.html")
+            upcoming_workshops = Workshop.find(status='confirmed')
+            completed_workshops = Workshop.find(status='completed')
+            return render_template("home.html",
+                upcoming_workshops=upcoming_workshops,
+                completed_workshops=completed_workshops)
 
 
 class dashboard:
@@ -155,6 +161,7 @@ class trainer_signup:
     def find_user(self, email):
         return Trainer.find(email=email)
 
+
 class edit_trainer_profile:
     FORM = forms.TrainerEditProfileForm
     TEMPLATE = "trainers/edit-profile.html"
@@ -178,7 +185,8 @@ class edit_trainer_profile:
         else:
             user.update(name=i.name, city=i.city, phone=i.phone, website=i.website, bio=i.bio)
             raise web.seeother("/dashboard")
-        
+
+
 class org_signup(trainer_signup):
     FORM = forms.OrganizationSignupForm
     TEMPLATE = "orgs/signup.html"
@@ -188,8 +196,13 @@ class org_signup(trainer_signup):
         return None
 
     def signup(self, i, userdata):
-        user = User.find(email=userdata['email']) or User.new(name=userdata['name'], email=userdata['email'])
-        org = Organization.new(name=i.name, city=i.city, admin_user=user, role=i.role)
+        user = User.find(email=userdata['email'])
+        if not user:
+            user = User.new(name=userdata['name'], email=userdata['email'])
+        org = Organization.new(name=i.name,
+                               city=i.city,
+                               admin_user=user,
+                               role=i.role)
         account.set_login_cookie(user.email)
         raise web.seeother("/orgs/{}".format(org.id))
 
@@ -244,3 +257,35 @@ class trainer_view:
         if not trainer:
             raise web.notfound()
         return render_template("trainers/view.html", trainer=trainer)
+
+
+class new_workshop:
+    def GET(self, org_id):
+        org = Organization.find(id=org_id)
+        if not org:
+            raise web.notfound()
+        form = forms.NewWorkshopForm()
+        return render_template("workshops/new.html", org=org, form=form)
+
+    def POST(self, org_id):
+        org = Organization.find(id=org_id)
+        if not org:
+            raise web.notfound()
+        i = web.input()
+        form = forms.NewWorkshopForm(i)
+        if not form.validate():
+            return render_template("workshops/new.html", org=org, form=form)
+        workshop = org.add_new_workshop(
+            title=form.title.data,
+            description=form.description.data,
+            expected_participants=form.expected_participants.data,
+            date=form.preferred_date.data)
+        return web.seeother("/workshops/{}".format(workshop.id))
+
+
+class workshop_view:
+    def GET(self, id):
+        workshop = Workshop.find(id=id)
+        if not workshop:
+            raise web.notfound()
+        return render_template("workshops/view.html", workshop=workshop)

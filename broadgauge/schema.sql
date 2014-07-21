@@ -20,3 +20,13 @@ create table trainer (
     website text,
     bio text
 );
+
+create table workshop (
+    id serial primary key,
+    org_id integer references organization,
+    title text,
+    description text,
+    status text default 'pending', -- one of pending, confirmed or completed
+    expected_participants integer,
+    "date" date
+);

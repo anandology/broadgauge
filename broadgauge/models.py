@@ -70,6 +70,7 @@ class User(Model):
         get_db().update("users", where='id=$id', vars=self, **kw)
         dict.update(self, kw)
 
+
 class Trainer(User):
     """Model class for Trainer.
     """
@@ -101,6 +102,7 @@ class Trainer(User):
             db.update('trainer', where='user_id=$user_id', vars=self, **d2)
         dict.update(self, d2)
 
+
 class Organization(Model):
     TABLE = "organization"
 
@@ -112,3 +114,33 @@ class Organization(Model):
 
     def get_admin(self):
         return User.find(id=self.admin_id)
+
+    def get_workshops(self, status=None):
+        """Returns list of workshops by this organiazation.
+        """
+        wheres = {}
+        if status:
+            wheres['status'] = status
+        return Workshop.findall(org_id=self.id, order='date desc', **wheres)
+
+    def add_new_workshop(self, title, description,
+                         expected_participants, date):
+        return Workshop.new(self, title, description,
+                            expected_participants, date)
+
+
+class Workshop(Model):
+    TABLE = "workshop"
+
+    @classmethod
+    def new(cls, org, title, description, expected_participants, date):
+        id = get_db().insert("workshop",
+                             org_id=org.id,
+                             title=title,
+                             description=description,
+                             expected_participants=expected_participants,
+                             date=date)
+        return cls.find(id=id)
+
+    def get_org(self):
+        return Organization.find(id=self.org_id)

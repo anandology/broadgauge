@@ -34,3 +34,32 @@ ul.org-list li {
     padding: 2px 0px;
 
 }
+
+.container-wrapper-workshops {
+  background: #eeeeee;
+  margin: 20px 0px;
+  padding: 20px 0px;
+}
+
+li.workshop {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+li.workshop .octicon {
+  width: 20px;
+  color: #888;
+  text-align: left;
+}
+
+li.workshop .workshop-notes {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.org-head {
+  background: #eee;
+  margin: 0px;
+  margin-top: -20px;
+  padding-bottom: 10px;
+}
