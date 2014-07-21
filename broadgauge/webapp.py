@@ -53,8 +53,8 @@ class home:
         if user:
             raise web.seeother("/dashboard")
         else:
-            upcoming_workshops = Workshop.find(status='confirmed')
-            completed_workshops = Workshop.find(status='completed')
+            upcoming_workshops = Workshop.findall(status='confirmed')
+            completed_workshops = Workshop.findall(status='completed')
             return render_template("home.html",
                 upcoming_workshops=upcoming_workshops,
                 completed_workshops=completed_workshops)
