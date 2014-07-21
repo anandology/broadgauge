@@ -128,6 +128,21 @@ class Organization(Model):
         return Workshop.new(self, title, description,
                             expected_participants, date)
 
+    def is_admin(self, email):
+        """Returns True of given email is an admin of this org.
+        """
+        if not email:
+            return False
+
+        # Admin user is admin of every org
+        if web.config.get('admin_user') == email:
+            return True
+
+        admin = self.get_admin()
+        if admin and admin.email == email:
+            return True
+
+        return False
 
 class Workshop(Model):
     TABLE = "workshop"

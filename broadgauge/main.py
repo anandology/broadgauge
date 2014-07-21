@@ -18,7 +18,8 @@ def load_config_from_env():
         'GITHUB_CLIENT_ID',
         'GITHUB_CLIENT_SECRET',
         'SECRET_KEY',
-        'DATABASE_URL'
+        'DATABASE_URL',
+        'ADMIN_USER',
     ]
 
     for k in keys:

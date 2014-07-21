@@ -5,7 +5,10 @@
 <div class="org-head">
   <div class="container">
     <h1><a href="/orgs/{{org.id}}">{{ org.name }}</a></h1>
-    <a class="btn btn-primary pull-right" href="/orgs/{{org.id}}/new-workshop">Setup a new workshop</a>
+
+    {% if user and org.is_admin(user.email) %}
+      <a class="btn btn-primary pull-right" href="/orgs/{{org.id}}/new-workshop">Setup a new workshop</a>
+    {% endif %}
     <div><span class="octicon octicon-location"></span> {{org.city}}</div>
   </div>
 </div>
