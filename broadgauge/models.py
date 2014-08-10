@@ -80,13 +80,12 @@ class Organization(Model):
     TABLE = "organization"
 
     @classmethod
-    def new(cls, name, city, admin_user=None, role=None):
-        id = get_db().insert("organization", name=name, city=city,
-                             admin_id=admin_user and admin_user.id, admin_role=role)
+    def new(cls, name, city):
+        id = get_db().insert("organization", name=name, city=city)
         return cls.find(id=id)
 
-    def get_admin(self):
-        return User.find(id=self.admin_id)
+    def add_member(self, user, role):
+        get_db().insert("organization_members", user_id=user.id, role=role)
 
     def get_workshops(self, status=None):
         """Returns list of workshops by this organiazation.
@@ -116,6 +115,26 @@ class Organization(Model):
             return True
 
         return False
+
+    def is_member(self, user):
+        result = get_db().query(
+            "SELECT * FROM organization_members" +
+            " WHERE org_id=$self.id AND user_id=$user.id",
+            vars=locals())
+        return bool(result)
+
+    def get_members(self):
+        result = get_db().query(
+            "SELECT users.*, role FROM users" +
+            " JOIN organization_members ON organization_members.user_id=users.id" +
+            " WHERE organization_members.org_id=$self.id", vars=locals())
+
+        def make_member(row):
+            role = row.pop('role')
+            member = User(row)
+            return member, role
+
+        return [make_member(row) for row in result]
 
 class Workshop(Model):
     TABLE = "workshop"

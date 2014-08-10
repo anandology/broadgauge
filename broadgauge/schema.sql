@@ -14,15 +14,13 @@ create table users (
 create table organization (
     id serial primary key,
     name text,
-    city text,
-    admin_id integer references users,
-    admin_role text
+    city text
 );
 
 create table organization_members (
     id serial primary key,
     org_id integer references organization,
-    member_id integer references users,
+    user_id integer references users,
     role text,
     since timestamp default (current_timestamp at time zone 'UTC')
 );
