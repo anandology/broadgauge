@@ -4,6 +4,7 @@ import web
 import datetime
 import time
 
+from .models import User
 
 def get_secret_key():
     return web.config.secret_key
@@ -49,4 +50,4 @@ def _get_current_user():
         return
 
     if check_salted_hash(email + "," + login_time, digest):
-        return email
+        return User.find(email=email)

@@ -62,46 +62,19 @@ class User(Model):
     TABLE = "users"
 
     @classmethod
-    def new(cls, name, email, phone=None):
-        id = get_db().insert("users", name=name, email=email, phone=phone)
+    def new(cls, name, email, phone=None, **kw):
+        id = get_db().insert("users", name=name, email=email, phone=phone, **kw)
         return cls.find(id=id)
 
     def update(self, **kw):
         get_db().update("users", where='id=$id', vars=self, **kw)
         dict.update(self, kw)
 
+    def is_trainer(self):
+        return self['is_trainer']
 
-class Trainer(User):
-    """Model class for Trainer.
-    """
-    TABLE = "trainer"
-
-    @classmethod
-    def new(cls, name, email, phone, city, **kw):
-        id = get_db().insert("users", name=name, email=email, phone=phone)
-        get_db().insert('trainer', user_id=id, city=city, seqname=False, **kw)
-        return cls.find(id=id)
-
-    @classmethod
-    def where(cls, **kw):
-        w = 'user_id=users.id'
-        if kw:
-            w = w + ' AND ' + web.db.sqlwhere(kw)
-        result = get_db().select([cls.TABLE, 'users'],
-                                 what='users.*, trainer.*', where=w)
-        return ResultSet(result, model=cls)
-
-    def update(self, **kw):
-        keys = ['name', 'email', 'phone']
-        d1 = dict((k, v) for k, v in kw.items() if k in keys)
-        d2 = dict((k, v) for k, v in kw.items() if k not in keys)
-
-        db = get_db()
-        with db.transaction():
-            User.update(self, **d1)
-            db.update('trainer', where='user_id=$user_id', vars=self, **d2)
-        dict.update(self, d2)
-
+    def is_admin(self):
+        return self['is_admin']
 
 class Organization(Model):
     TABLE = "organization"

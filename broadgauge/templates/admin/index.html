@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content_wrapper %}
+<div class="head head-admin">
+  <div class="container">
+    <h1><a href="/admin">Admin Center</a></h1>
+    <ul class="nav nav-pills">
+      <li class="active"><a href="/admin">Home</a></li>
+    </ul>
+  </div>
+</div>
+<div class="container">
+    <h2>Admins</h2>
+    {% if admins %}
+      <ul class="list-unstyled org-list">
+        {% for admin in admins %}
+          <li>
+              <a href="/admin/people/{{admin.id}}"><img src="http://www.gravatar.com/avatar/{{admin.email | md5}}?s=30&d=mm" class="img-rounded"></a>
+              <strong><a href="/admin/people/{{admin.id}}">{{admin.name}}</a></strong>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <em>No admins have been added so far.</em>
+    {% endif %}
+    <h3>Add new Admin</h3>
+    <form method="POST">
+      <div class="form-group">
+        <label for="email">Email address <span class="small">There must be a user registered with that email.</span></label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+      </div>
+      <div class="form-group">
+        <button type="submit" name="action" value="add-admin">Add Admin</button>
+      </div>
+    </form>
+</div>
+{% endblock %}
+
