@@ -151,3 +151,20 @@ class Workshop(Model):
 
     def get_org(self):
         return Organization.find(id=self.org_id)
+
+    def record_interest(self, trainer):
+        """Record that the given trainer has shown interest to conduct
+        the this workshop.
+        """
+        get_db().insert("workshop_trainers", workshop_id=self.id, trainer_id=trainer.id)
+
+    def get_interested_trainers(self):
+        db = get_db()
+        rows = db.where("workshop_trainers", workshop_id=self.id)
+        ids = [row.trainer_id for row in row]
+        rows = db.query(
+                "SELECT users.*, trainers.*" +
+                " FROM users, trainers" +
+                " WHERE users.id=trainers.user_id AND trainers.id IN $ids",
+                vars={"ids": ids})
+        return [Trainer(row) for row in rows]

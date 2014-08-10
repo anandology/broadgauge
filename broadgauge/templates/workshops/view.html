@@ -1,13 +1,58 @@
+{% extends "orgs/view.html" %}
+
 {% set org = workshop.get_org() %}
 
-{% extends "orgs/view.html" %}
 {% block org_content %}
+<!--
+<ol class="breadcrumb">
+  <li><a href="/workshops">Workshops</a></li>
+  <li></li>
+</ol>
+-->
 <h1>{{ workshop.title }}</h1>
-<div>
-  <span class="octicon octicon-calendar"></span>
-  <span>{{ workshop.date }}</span>
+<div class="row">
+  <div class="col-md-9 workshop-details">
+    <div class="workshop-venue">
+      <span class="octicon octicon-location"></span>
+      <span class="workshop-org">{{ org.name }}</span>,
+      <span class="city">{{ org.city }}</span>
+    </div>
+    <div>
+      <span class="octicon octicon-calendar"></span>
+      <span>{{ workshop.date }}</span>
+    </div>
+
+    <div>
+    {{ workshop.description }}
+    </div>
+
+    {% if org.is_member(user) %}
+      <h3>Interested Trainers</h3>
+      {% set trainers = org.get_interested_trainers %}
+      {% if trainers %}
+        <ul class="list-unstyled">
+          {% for t in trainers %}
+          <li>
+            <div style="width: 50px; float: left;">
+              <img src="http://www.gravatar.com/avatar/{{t.email | md5}}?s=50&d=mm" class="img-thumbnail">
+            </div>
+            <div style="padding-left: 10px; float: left;">
+              <div><strong>{{t.name}}</strong></div>
+            </div>
+            <div class="clearfix"></div>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <em>No trainers expressed interest so far.</em>
+      {% endif %}
+    {% elif user and user.is_trainer() %}
+      <div class="well well-sm">
+        <p>This workshop need a trainer. Are you interested?</p>
+        <p><a href="#" class="btn btn-primary">Express Interest</a></p>
+      </div>
+    {% endif %}
+
+  </div>
 </div>
-
-{{ workshop.description }}
-
 {% endblock %}

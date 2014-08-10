@@ -296,3 +296,23 @@ class workshop_view:
         if not workshop:
             raise web.notfound()
         return render_template("workshops/view.html", workshop=workshop)
+
+    def POST(self, id):
+        workshop = Workshop.find(id=id)
+        if not workshop:
+            raise web.notfound()
+
+        i = web.input(action=None)
+        if i.action == "express-interest":
+            return self.POST_express_interest(workshop, i)
+        else:
+            return render_template("workshops/view.html", workshop=workshop)
+
+    def POST_express_interest(self, workshop, i):
+        user = account.get_current_user()
+        if user.is_trainer():
+            workshop.record_interest(user)
+            flash("Thank you for experessing interest to this workshop.")
+            raise web.seeother("/workshops/{}".format(workshop.id))
+        else:
+            return render_template("workshops/view.html", workshop=workshop)

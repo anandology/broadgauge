@@ -10,7 +10,7 @@
   {% endif %}
 {% endmacro %}
 
-{% macro workshop_preview(workshop) %}
+{% macro workshop_preview(workshop, user=None) %}
   <div class="workshop">
     {% set org = workshop.get_org() %}
     <h3 class="workshop-title"><a href="/workshops/{{ workshop.id }}">{{ workshop.title }}</a></h3>
@@ -23,14 +23,19 @@
       <span class="octicon octicon-calendar"></span>
       <span>{{ workshop.date }}</span>
     </div>
+    {% if workshop.status == 'pending' and user and user.is_trainer() %}
+      <a href="#" class="btn btn-primary">Express Interest</a>
+    {% elif workshop.status == 'confirmed' %}
+      <div class="workshop-label"><span style="color: #444; border: 1px solid #ccd; border-radius: 5px; padding: 2px; background: #dde;">Confirmed</span></div>
+    {% endif %}
   </div>
 {% endmacro %}
 
-{% macro workshop_list(workshops) %}
+{% macro workshop_list(workshops, user=None) %}
   {% if workshops %}
     <ul class="list-unstyled">
       {% for w in workshops %}
-        <li>{{ workshop_preview(w) }}</li>
+        <li>{{ workshop_preview(w, user=user) }}</li>
       {% endfor %}
     </ul>
   {% else %}

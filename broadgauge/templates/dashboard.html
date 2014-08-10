@@ -1,6 +1,32 @@
+{% import "macros.html" as macros %}
 {% extends "base.html" %}
 {% block content %}
 <h1>Hello {{ user.name }}</h1>
 <br />
 <a href="/settings/profile" class="btn btn-primary btn-large">Edit Profile</a>
+
+<div class="row">
+  <div class="col-md-6">
+    <h2>Workshops that need trainers</h2>
+    {% set workshops = get_pending_workshops() %}
+    {% if workshops %}
+      The following workshops need trainers, are you interested?
+      {{ macros.workshop_list(workshops, user)}}
+    {% else %}
+      <em>There are no workshops in need of trainers right now.</em>
+    {% endif %}
+
+  </div>
+  <div class="col-md-6">
+    <h2>Your workshops</h2>
+
+    <h4>Upcoming</h4>
+    <em>You don't have any upcoming workshops.</em>
+
+    <h4>Past Workshops</h4>
+    <em>You've not conducted any workshops so far.</em>
+  </div>
+</div>
+
+
 {% endblock %}
