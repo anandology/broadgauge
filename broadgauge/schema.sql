@@ -19,10 +19,11 @@ create table organization (
 
 create table organization_members (
     id serial primary key,
-    org_id integer references organization,
-    user_id integer references users,
+    org_id integer not null references organization,
+    user_id integer not null references users,
     role text,
-    since timestamp default (current_timestamp at time zone 'UTC')
+    since timestamp default (current_timestamp at time zone 'UTC'),
+    unique (org_id, user_id)
 );
 
 create table workshop (

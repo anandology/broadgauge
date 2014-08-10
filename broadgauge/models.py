@@ -85,7 +85,7 @@ class Organization(Model):
         return cls.find(id=id)
 
     def add_member(self, user, role):
-        get_db().insert("organization_members", user_id=user.id, role=role)
+        get_db().insert("organization_members", org_id=self.id, user_id=user.id, role=role)
 
     def get_workshops(self, status=None):
         """Returns list of workshops by this organiazation.

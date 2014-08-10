@@ -6,7 +6,7 @@
   <div class="container">
     <h1><a href="/orgs/{{org.id}}">{{ org.name }}</a></h1>
 
-    {% if user and org.is_admin(user.email) %}
+    {% if user and (user.is_admin() or org.is_member(user)) %}
       <a class="btn btn-primary pull-right" href="/orgs/{{org.id}}/new-workshop">Setup a new workshop</a>
     {% endif %}
     <div><span class="octicon octicon-location"></span> {{org.city}}</div>
@@ -34,6 +34,9 @@
   </ul>
 {% else %}
   <em>No members.</em>
+{% endif %}
+{% if user and (user.is_admin() or org.is_member(user)) %}
+  <a class="btn btn-primary" href="/orgs/{{org.id}}/add-member">Add New Member</a>
 {% endif %}
 
 <div class="row">

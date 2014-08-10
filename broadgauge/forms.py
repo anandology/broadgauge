@@ -6,6 +6,7 @@ from wtforms import (
     DateField, IntegerField, StringField, TextAreaField,
     validators)
 
+from .models import User
 
 class MultiDict(web.storage):
     """wtforms expect the formdate to be a multi-dict instance with getall method.
@@ -52,3 +53,12 @@ class NewWorkshopForm(BaseForm):
 class AdminAddOrgForm(BaseForm):
     name = StringField('Name', [validators.Required()])
     city = StringField('City', [validators.Required()])
+
+def valid_user_email(form, field):
+    email = field.data
+    if not User.find(email=email):
+        raise validators.ValidationError("No user found with that email address.")
+
+class OrgAddMemberForm(BaseForm):
+    email = StringField('E-mail Address', [validators.Required(), valid_user_email])
+    role = StringField('Role', [validators.Required()])

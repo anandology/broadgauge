@@ -1,0 +1,11 @@
+{% from 'forms.html' import render_field %}
+{% extends "orgs/view.html" %}
+{% block org_content %}
+<h2>Add New Member</h2>
+
+<form method="POST">
+    {{render_field(form.email, help="There must be a user registered with that email.")}}
+    {{render_field(form.role)}}
+    <button type="submit" class="btn btn-default">Add New Member</button>
+</form>
+{% endblock %}
