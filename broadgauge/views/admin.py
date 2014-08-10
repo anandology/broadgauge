@@ -11,6 +11,7 @@ modname = __name__
 urls = (
     "/admin", modname + ".admin",
     "/admin/orgs", modname + ".admin_orgs",
+    "/admin/people", modname + ".admin_people",
 )
 
 def has_admins():
@@ -79,3 +80,22 @@ class admin_orgs:
         org = Organization.new(name=i.name, city=i.city)
         flash("Successfully created new organizaton.")
         raise web.seeother("/orgs/{}".format(org.id))
+
+class admin_people:
+    @admin_required
+    def GET(self):
+        people = User.findall(order='id desc')
+        form = forms.AdminAddPersonForm()
+        return render_template("admin/people.html", form=form, people=people)
+
+    @admin_required
+    def POST(self):
+        i = web.input()
+        form = forms.AdminAddPersonForm(i)
+        if not form.validate():
+            people = User.findall(order='id desc')
+            return render_template("admin/people.html", form=form, people=people)
+        else:
+            User.new(name=i.name, email=i.email, phone=i.phone, city=i.city, is_trainer=form.trainer.data)
+            flash("Created new user successfully.")
+            raise web.seeother("/admin/people")

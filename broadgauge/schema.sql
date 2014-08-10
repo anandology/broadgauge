@@ -8,7 +8,8 @@ create table users (
     website text,
     github text,
     is_admin boolean,
-    is_trainer boolean
+    is_trainer boolean,
+    created timestamp default (current_timestamp at time zone 'UTC')
 );
 
 create table organization (

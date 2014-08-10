@@ -3,7 +3,8 @@
 import web
 from wtforms import (
     Form,
-    DateField, IntegerField, StringField, TextAreaField,
+    BooleanField, DateField, IntegerField, 
+    StringField, TextAreaField,
     validators)
 
 from .models import User
@@ -53,6 +54,13 @@ class NewWorkshopForm(BaseForm):
 class AdminAddOrgForm(BaseForm):
     name = StringField('Name', [validators.Required()])
     city = StringField('City', [validators.Required()])
+
+class AdminAddPersonForm(BaseForm):
+    name = StringField('Name', [validators.Required()])
+    email = StringField('E-mail Address', [validators.Required(), validators.Email()])
+    phone = StringField('Phone Number', [validators.Required()])
+    city = StringField('City', [validators.Required()])
+    trainer = BooleanField('Is He/She a Trainer?')
 
 def valid_user_email(form, field):
     email = field.data

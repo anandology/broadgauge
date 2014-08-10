@@ -6,7 +6,7 @@ import md5
 env = Environment(loader=PackageLoader('broadgauge', 'templates'))
 env.filters['tojson'] = json.dumps
 env.filters['md5'] = lambda s: md5.md5(s).hexdigest()
-
+env.filters['datestr'] = web.datestr
 _context_processors = []
 
 
