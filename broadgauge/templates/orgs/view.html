@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {% block content_wrapper %}
-<div class="org-head">
+<div class="head head-org">
   <div class="container">
     <h1><a href="/orgs/{{org.id}}">{{ org.name }}</a></h1>
 
@@ -16,20 +16,23 @@
 <div class="container">
 {% block org_content %}
 <h3>Members</h3>
-<ul class="list-unstyled">
-  <li>
-    {% set admin = org.get_admin() %}
-    <div style="width: 50px; float: left;">
-      <img src="http://www.gravatar.com/avatar/{{admin.email | md5}}?s=50&d=mm" class="img-thumbnail">
-    </div>
-    <div style="padding-left: 10px; float: left;">
-      <div><strong>{{admin.name}}</strong></div>
-      <div>{{org.admin_role}}</div>
-    </div>
-    <div class="clearfix"></div>
-  </li>
-</ul>
-
+{% set admin = org.get_admin() %}
+{% if admin %}
+  <ul class="list-unstyled">
+    <li>
+      <div style="width: 50px; float: left;">
+        <img src="http://www.gravatar.com/avatar/{{admin.email | md5}}?s=50&d=mm" class="img-thumbnail">
+      </div>
+      <div style="padding-left: 10px; float: left;">
+        <div><strong>{{admin.name}}</strong></div>
+        <div>{{org.admin_role}}</div>
+      </div>
+      <div class="clearfix"></div>
+    </li>
+  </ul>
+{% else %}
+  <em>No members.</em>
+{% endif %}
 
 <div class="row">
   <div class="col-md-6">

@@ -48,3 +48,7 @@ class NewWorkshopForm(BaseForm):
     description = TextAreaField('Description', [validators.Required()])
     expected_participants = IntegerField('Expected number of pariticipants', [validators.Required()])
     preferred_date = DateField('Preferred Date', [validators.Required()])
+
+class AdminAddOrgForm(BaseForm):
+    name = StringField('Name', [validators.Required()])
+    city = StringField('City', [validators.Required()])

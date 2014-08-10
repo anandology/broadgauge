@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% macro nav_pill(url, name, current_url) %}
+  {% if current_url == url %}
+    <li class="active"><a href="{{url}}">{{name}}</a></li>
+  {% else %}
+    <li><a href="{{url}}">{{name}}</a></li>
+  {% endif %}
+{% endmacro %}
+
+{% macro navbar(path="/admin") %}
+    <ul class="nav nav-pills">
+      {{ nav_pill("/admin", "Home", path) }}
+      {{ nav_pill("/admin/orgs", "Orgs", path) }}
+    </ul>
+{% endmacro %}
+
+{% block content_wrapper %}
+<div class="head head-admin">
+  <div class="container">
+    <h1><a href="/admin">Admin Center</a></h1>
+    {{ navbar(request_path) }}
+  </div>
+</div>
+<div class="container">
+    {% block admin_body %}
+    {% endblock %}
+</div>
+{% endblock %}
+

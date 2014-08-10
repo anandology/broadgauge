@@ -57,9 +57,34 @@ li.workshop .workshop-notes {
   color: #888;
 }
 
-.org-head {
+.head {
   background: #eee;
   margin: 0px;
   margin-top: -20px;
   padding-bottom: 10px;
+}
+
+.head-admin {
+  background: #000;
+  color: #ffa;
+}
+
+.head-admin a {
+  color: #ffa;
+}
+
+.breadcrumb {
+  background-color: inherit;
+  margin-bottom: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+}
+
+.breadcrumb + h1 {
+  padding-top: 0px;
+  margin-top: 0px;
+}
+
+.workshop-details .well {
+  margin: 20px 0px;
 }

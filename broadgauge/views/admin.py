@@ -2,14 +2,15 @@ import functools
 import web
 
 from ..template import render_template
-from ..models import User
+from ..models import User, Organization
 from ..flash import flash
 from .. import account
-
+from .. import forms
 
 modname = __name__
 urls = (
     "/admin", modname + ".admin",
+    "/admin/orgs", modname + ".admin_orgs",
 )
 
 def has_admins():
@@ -62,3 +63,19 @@ class admin:
                         error_add_admin="Not a valid user.")
         else:
             return self.GET()
+
+class admin_orgs:
+    @admin_required
+    def GET(self):
+        form = forms.AdminAddOrgForm()
+        return render_template("admin/orgs.html", form=form)
+
+    @admin_required
+    def POST(self):
+        i = web.input()
+        form = forms.AdminAddOrgForm(i)
+        if not form.validate():
+            return render_template("admin/orgs.html", form=form)
+        org = Organization.new(name=i.name, city=i.city)
+        flash("Successfully created new organizaton.")
+        raise web.seeother("/orgs/{}".format(org.id))

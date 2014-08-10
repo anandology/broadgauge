@@ -1,0 +1,16 @@
+{% from 'forms.html' import render_field %}
+{% extends "admin/base.html" %}
+{% block admin_body %}
+  <h2>Organizations</h2>
+
+  <h3>Add a new Organization</h3>
+  <form method="POST">
+    {{ render_field(form.name) }}
+    {{ render_field(form.city) }}
+    
+    <div class="form-group">
+      <button type="submit" name="action" value="add-admin">Add New Organization</button>
+    </div>
+  </form>
+{% endblock %}
+
