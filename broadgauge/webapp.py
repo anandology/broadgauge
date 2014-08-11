@@ -244,7 +244,7 @@ class org_view:
         org = Organization.find(id=id)
         if not org:
             raise web.notfound()
-   
+
         return render_template("orgs/view.html", org=org)
 
 class org_new_member:
@@ -292,7 +292,7 @@ class trainers_list:
 
 class trainer_view:
     def GET(self, id):
-        trainer = User.find(user_id=id, is_trainer=True)
+        trainer = User.find(id=id, is_trainer=True)
         if not trainer:
             raise web.notfound()
         return render_template("trainers/view.html", trainer=trainer)
