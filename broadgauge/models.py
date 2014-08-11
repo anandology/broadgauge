@@ -152,6 +152,10 @@ class Workshop(Model):
                              date=date)
         return cls.find(id=id)
 
+    def update(self, **kw):
+        get_db().update("workshop", where='id=$id', vars=self, **kw)
+        dict.update(self, kw)
+
     def get_org(self):
         return Organization.find(id=self.org_id)
 
