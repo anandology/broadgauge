@@ -42,5 +42,6 @@ create table workshop_trainers (
     id serial primary key,
     workshop_id integer references workshop,
     trainer_id integer references users,
-    tstamp timestamp default (current_timestamp at time zone 'UTC')
+    tstamp timestamp default (current_timestamp at time zone 'UTC'),
+    unique (workshop_id, trainer_id)
 );
