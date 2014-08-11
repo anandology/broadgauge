@@ -1,7 +1,7 @@
 {% from "forms.html" import render_field %}
 {% extends "orgs/view.html" %}
 {% block org_content %}
-<h1>Edit {{workshop.title}}</h1>
+<h1>Edit <a href="/workshops/{{workshop.id}}">{{workshop.title}}</a></h1>
 
 <div class="row">
   <div class="col-md-6 col-sm-12">
