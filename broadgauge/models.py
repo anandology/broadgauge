@@ -165,5 +165,8 @@ class Workshop(Model):
         db = get_db()
         rows = db.where("workshop_trainers", workshop_id=self.id)
         ids = [row.trainer_id for row in rows]
-        rows = db.query("SELECT * FROM users WHERE id IN $ids", vars={"ids": ids})
-        return [User(row) for row in rows]
+        if ids:
+            rows = db.query("SELECT * FROM users WHERE id IN $ids", vars={"ids": ids})
+            return [User(row) for row in rows]
+        else:
+            return []

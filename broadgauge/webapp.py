@@ -303,9 +303,8 @@ class new_workshop:
         if not org:
             raise web.notfound()
 
-        if not org.is_admin(account.get_current_user()):
-            # TODO: display permission denied error instead
-            raise web.seeother("/orgs/{}".format(org_id))
+        if not org.is_member(account.get_current_user()):
+            return render_template("permission_denied.html")
 
         form = forms.NewWorkshopForm()
         return render_template("workshops/new.html", org=org, form=form)
@@ -314,6 +313,9 @@ class new_workshop:
         org = Organization.find(id=org_id)
         if not org:
             raise web.notfound()
+        if not org.is_member(account.get_current_user()):
+            return render_template("permission_denied.html")
+
         i = web.input()
         form = forms.NewWorkshopForm(i)
         if not form.validate():
