@@ -203,9 +203,8 @@ class org_signup(trainer_signup):
         if not user:
             user = User.new(name=userdata['name'], email=userdata['email'])
         org = Organization.new(name=i.name,
-                               city=i.city,
-                               admin_user=user,
-                               role=i.role)
+                               city=i.city)
+        org.add_member(user, i.role)
         account.set_login_cookie(user.email)
         raise web.seeother("/orgs/{}".format(org.id))
 
