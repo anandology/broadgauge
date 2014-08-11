@@ -28,16 +28,16 @@
 
     {% if org.is_member(user) %}
       <h3>Interested Trainers</h3>
-      {% set trainers = org.get_interested_trainers %}
+      {% set trainers = workshop.get_interested_trainers() %}
       {% if trainers %}
         <ul class="list-unstyled">
           {% for t in trainers %}
           <li>
-            <div style="width: 50px; float: left;">
-              <img src="http://www.gravatar.com/avatar/{{t.email | md5}}?s=50&d=mm" class="img-thumbnail">
+            <div style="width: 30px; float: left;">
+              <img src="http://www.gravatar.com/avatar/{{t.email | md5}}?s=30&d=mm" class="img-thumbnail">
             </div>
             <div style="padding-left: 10px; float: left;">
-              <div><strong>{{t.name}}</strong></div>
+              <div><a href="/trainers/{{t.id}}"><strong>{{t.name}}</strong></a></div>
             </div>
             <div class="clearfix"></div>
           </li>

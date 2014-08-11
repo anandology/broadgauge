@@ -164,10 +164,6 @@ class Workshop(Model):
     def get_interested_trainers(self):
         db = get_db()
         rows = db.where("workshop_trainers", workshop_id=self.id)
-        ids = [row.trainer_id for row in row]
-        rows = db.query(
-                "SELECT users.*, trainers.*" +
-                " FROM users, trainers" +
-                " WHERE users.id=trainers.user_id AND trainers.id IN $ids",
-                vars={"ids": ids})
-        return [Trainer(row) for row in rows]
+        ids = [row.trainer_id for row in rows]
+        rows = db.query("SELECT * FROM users WHERE id IN $ids", vars={"ids": ids})
+        return [User(row) for row in rows]

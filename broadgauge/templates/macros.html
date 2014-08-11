@@ -24,7 +24,9 @@
       <span>{{ workshop.date }}</span>
     </div>
     {% if workshop.status == 'pending' and user and user.is_trainer() %}
-      <a href="#" class="btn btn-primary">Express Interest</a>
+      <form method="POST" action="/workshops/{{workshop.id}}">
+        <button type="submit" class="btn btn-primary" name="action" value="express-interest">Express Interest</button>
+      </form>
     {% elif workshop.status == 'confirmed' %}
       <div class="workshop-label"><span style="color: #444; border: 1px solid #ccd; border-radius: 5px; padding: 2px; background: #dde;">Confirmed</span></div>
     {% endif %}

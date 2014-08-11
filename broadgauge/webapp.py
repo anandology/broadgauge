@@ -346,9 +346,9 @@ class workshop_view:
 
     def POST_express_interest(self, workshop, i):
         user = account.get_current_user()
-        if user.is_trainer():
+        if user and user.is_trainer():
             workshop.record_interest(user)
-            flash("Thank you for experessing interest to this workshop.")
+            flash("Thank you for experessing interest to conduct this workshop.")
             raise web.seeother("/workshops/{}".format(workshop.id))
         else:
             return render_template("workshops/view.html", workshop=workshop)
