@@ -34,6 +34,7 @@ def set_login_cookie(email):
 
 def logout():
     web.setcookie("session", "", expires=-1)
+    web.setcookie("oauth", "", expires=-1)
 
 
 def get_current_user():
