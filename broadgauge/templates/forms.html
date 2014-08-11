@@ -5,7 +5,7 @@
         <div class="form-group">
     {% endif %}
         <label for="{{ field.id }}">{{ field.label }} <span class="small">{{ help }}</span></label>
-        {{ field(class_='form-control') }}
+        {{ field(class_='form-control', **kwargs) }}
         <ul class="help-block list-unstyled">
             {% for error in field.errors %}
                 <li>{{ error }}</li>

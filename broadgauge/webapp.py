@@ -304,7 +304,7 @@ class new_workshop:
         if not org:
             raise web.notfound()
 
-        if not org.is_member(account.get_current_user()):
+        if not org.can_update(account.get_current_user()):
             return render_template("permission_denied.html")
 
         form = forms.NewWorkshopForm()
@@ -314,7 +314,7 @@ class new_workshop:
         org = Organization.find(id=org_id)
         if not org:
             raise web.notfound()
-        if not org.is_member(account.get_current_user()):
+        if not org.can_update(account.get_current_user()):
             return render_template("permission_denied.html")
 
         i = web.input()
@@ -325,46 +325,43 @@ class new_workshop:
             title=form.title.data,
             description=form.description.data,
             expected_participants=form.expected_participants.data,
-            date=form.preferred_date.data)
+            date=form.date.data)
         return web.seeother("/workshops/{}".format(workshop.id))
 
 class edit_workshop:
-    FORM = forms.WorkshopEditForm
-    TEMPLATE = "workshops/edit.html"
-
     def GET(self, workshop_id):
         workshop = Workshop.find(id=workshop_id)
         if not workshop:
             raise web.notfound()
 
-        org = Organization.find(id=workshop.org_id)
-
-        if not org.is_member(account.get_current_user()):
+        org = workshop.get_org()
+        if not org.can_update(account.get_current_user()):
             return render_template("permission_denied.html")
 
-        form = forms.NewWorkshopForm(workshop)
-        return render_template(self.TEMPLATE, org=org, workshop=workshop, form=form)
+        form = forms.NewWorkshopForm(workshop.dict())
+        return render_template("workshops/edit.html", org=org, workshop=workshop, form=form)
 
     def POST(self, workshop_id):
         workshop = Workshop.find(id=workshop_id)
         if not workshop:
             raise web.notfound()
 
-        org = Organization.find(id=workshop.org_id)
-
-        if not org.is_member(account.get_current_user()):
+        org = workshop.get_org()
+        if not org.can_update(account.get_current_user()):
             return render_template("permission_denied.html")
 
         i = web.input()
         form = forms.NewWorkshopForm(i)
         if not form.validate():
-            return render_template(self.TEMPLATE, org=org, workshop=workshop, form=form)
+            return render_template("workshops/edit.html",
+                                   org=org, workshop=workshop, form=form)
         else:
             workshop.update(
                 title=i.title,
                 description=i.description,
                 expected_participants=i.expected_participants,
-                date=i.preferred_date)
+                date=i.date)
+            flash("Thanks for updating the workshop details.")
             return web.seeother("/workshops/{}".format(workshop.id))
 
 class workshop_view:

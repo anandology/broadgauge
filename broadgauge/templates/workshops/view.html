@@ -9,7 +9,12 @@
   <li></li>
 </ol>
 -->
-<h1>{{ workshop.title }}</h1>
+<h1>
+  {{ workshop.title }}
+  {% if org.can_update(user) %}
+  <a class="small" href="/workshops/{{workshop.id}}/edit">Edit</a>
+  {% endif %}
+</h1>
 <div class="row">
   <div class="col-md-9 workshop-details">
     <div class="workshop-venue">
@@ -26,7 +31,7 @@
     {{ workshop.description }}
     </div>
 
-    {% if org.is_member(user) %}
+    {% if user and org.is_member(user) %}
       <h3>Interested Trainers</h3>
       {% set trainers = workshop.get_interested_trainers() %}
       {% if trainers %}
@@ -55,8 +60,5 @@
 
   </div>
 </div>
-
-<br />
-<a href="/workshops/{{workshop.id}}/edit" class="btn btn-primary btn-large">Edit Workshop</a>
 
 {% endblock %}

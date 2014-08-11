@@ -126,6 +126,12 @@ class Organization(Model):
             vars=locals())
         return bool(result)
 
+    def can_update(self, user):
+        if not user:
+            return False
+        else:
+            return user.is_admin() or self.is_member(user)
+
     def get_members(self):
         result = get_db().query(
             "SELECT users.*, role FROM users" +
@@ -174,3 +180,8 @@ class Workshop(Model):
             return [User(row) for row in rows]
         else:
             return []
+
+    def dict(self):
+        d = dict(self)
+        d['date'] = self.date and self.date.isoformat()
+        return d
