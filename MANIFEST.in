@@ -1,2 +1,2 @@
-include Readme.txt
+include Readme.md
 recursive-include broadgauge/templates *.html
