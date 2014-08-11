@@ -70,6 +70,9 @@ class User(Model):
         get_db().update("users", where='id=$id', vars=self, **kw)
         dict.update(self, kw)
 
+    def make_trainer(self):
+        self.update(is_trainer=True)
+
     def is_trainer(self):
         return self['is_trainer']
 
