@@ -22,12 +22,14 @@ def add_urls(module):
 
 def load_all_views():
     from .views import admin
+    from .views import auth
     from .views import home
     from .views import orgs
     from .views import trainers
     from .views import workshops
 
     add_urls(admin)
+    add_urls(auth)
     add_urls(home)
     add_urls(orgs)
     add_urls(trainers)
