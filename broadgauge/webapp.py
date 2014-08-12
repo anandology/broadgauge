@@ -11,10 +11,8 @@ from .sendmail import sendmail
 # web.config.debug = False
 
 urls = (
-    "/", "home",
     "/logout", "logout",
     "/login", "login",
-    "/dashboard", "dashboard",
     "/trainers/signup", "trainer_signup",
     "(/trainers/signup|/orgs/signup|/login)/reset", "signup_reset",
     "(/trainers/signup|/orgs/signup|/login)/(github|google)", "signup_redirect",
@@ -32,12 +30,16 @@ def add_urls(module):
 
 def load_all_views():
     from .views import admin
-    from .views import workshops
+    from .views import home
     from .views import orgs
+    from .views import trainers
+    from .views import workshops
 
     add_urls(admin)
-    add_urls(workshops)
+    add_urls(home)
     add_urls(orgs)
+    add_urls(trainers)
+    add_urls(workshops)
 
 load_all_views()
 
@@ -55,28 +57,6 @@ def inject_user():
         'get_pending_workshops': lambda: Workshop.findall(status='pending'),
         'get_confirmed_workshops': lambda: Workshop.findall(status='confirmed'),
     }
-
-class home:
-    def GET(self):
-        user = account.get_current_user()
-        if user:
-            raise web.seeother("/dashboard")
-        else:
-            pending_workshops = Workshop.findall(status='pending')
-            upcoming_workshops = Workshop.findall(status='confirmed')
-            completed_workshops = Workshop.findall(status='completed')
-            return render_template("home.html",
-                pending_workshops=pending_workshops,
-                upcoming_workshops=upcoming_workshops,
-                completed_workshops=completed_workshops)
-
-
-class dashboard:
-    def GET(self):
-        user = account.get_current_user()
-        if not user:
-            raise web.seeother("/")
-        return render_template("dashboard.html")
 
 
 class logout:
