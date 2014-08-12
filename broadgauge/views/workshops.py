@@ -5,23 +5,31 @@ from ..flash import flash
 from .. import account
 from .. import forms
 
+
 urls = (
     "/workshops/(\d+)", "workshop_view",
-    "/workshops/(\d+)/edit", "edit_workshop", 
+    "/workshops/(\d+)/edit", "edit_workshop",
 )
+
+
+def get_workshop(id):
+    """Returns workshop by given id.
+
+    If there is no workshop with that id, 404 error is raised.
+    """
+    workshop = Workshop.find(id=id)
+    if not workshop:
+        raise web.notfound()
+    return workshop
+
 
 class workshop_view:
     def GET(self, id):
-        workshop = Workshop.find(id=id)
-        if not workshop:
-            raise web.notfound()
+        workshop = get_workshop(id=id)
         return render_template("workshops/view.html", workshop=workshop)
 
     def POST(self, id):
-        workshop = Workshop.find(id=id)
-        if not workshop:
-            raise web.notfound()
-
+        workshop = get_workshop(id=id)
         i = web.input(action=None)
         if i.action == "express-interest":
             return self.POST_express_interest(workshop, i)
@@ -37,24 +45,22 @@ class workshop_view:
         else:
             return render_template("workshops/view.html", workshop=workshop)
 
+
 class edit_workshop:
     def GET(self, workshop_id):
-        workshop = Workshop.find(id=workshop_id)
-        if not workshop:
-            raise web.notfound()
+        workshop = get_workshop(id=id)
+        self.ensure_updatable(workshop)
 
         org = workshop.get_org()
         if not org.can_update(account.get_current_user()):
             return render_template("permission_denied.html")
 
         form = forms.NewWorkshopForm(workshop.dict())
-        return render_template("workshops/edit.html", org=org, workshop=workshop, form=form)
+        return render_template("workshops/edit.html",
+                               org=org, workshop=workshop, form=form)
 
     def POST(self, workshop_id):
-        workshop = Workshop.find(id=workshop_id)
-        if not workshop:
-            raise web.notfound()
-
+        workshop = get_workshop(id=id)
         org = workshop.get_org()
         if not org.can_update(account.get_current_user()):
             return render_template("permission_denied.html")
@@ -72,4 +78,3 @@ class edit_workshop:
                 date=i.date)
             flash("Thanks for updating the workshop details.")
             return web.seeother("/workshops/{}".format(workshop.id))
-
