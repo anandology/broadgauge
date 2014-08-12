@@ -20,6 +20,11 @@ def load_config_from_env():
         'SECRET_KEY',
         'DATABASE_URL',
         'ADMIN_USER',
+        'MAIL_SERVER',
+        'MAIL_USERNAME',
+        'MAIL_PASSWORD',
+        'MAIL_TLS',
+        'FROM_ADDRESS',
     ]
 
     for k in keys:
