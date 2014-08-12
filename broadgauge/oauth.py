@@ -13,6 +13,8 @@ def oauth_service(service, redirect_uri):
         return GitHub(redirect_uri)
     elif service == 'google':
         return Google(redirect_uri)
+    elif service == 'facebook':
+        return Facebook(redirect_uri)
 
 
 class GitHub(OAuth2Service):
@@ -58,7 +60,6 @@ class Google(OAuth2Service):
     """Google OAuth integration.
     """
     def __init__(self, redirect_uri):
-        print 'Google', redirect_uri
         OAuth2Service.__init__(self,
             client_id=web.config.google_client_id,
             client_secret=web.config.google_client_secret,
@@ -94,4 +95,44 @@ class Google(OAuth2Service):
             return dict(name=d['name'], email=d['email'], service='Google')
         except KeyError, e:
             logger.error("failed to get user data from google. Error: %s",
+                         str(e), exc_info=True)
+
+class Facebook(OAuth2Service):
+    """Facebook OAuth integration.
+    """
+    def __init__(self, redirect_uri):
+        OAuth2Service.__init__(self,
+            client_id=web.config.facebook_client_id,
+            client_secret=web.config.facebook_client_secret,
+            name='facebook',
+            authorize_url='https://graph.facebook.com/oauth/authorize',
+            access_token_url='https://graph.facebook.com/oauth/access_token',
+            base_url='https://graph.facebook.com/')
+        self.redirect_uri = redirect_uri
+
+    def get_authorize_url(self, **params):
+        params.setdefault('response_type', 'code')
+        params.setdefault('redirect_uri', self.redirect_uri)
+        params.setdefault('scope', 'email')
+        return OAuth2Service.get_authorize_url(self, **params)
+
+    def get_auth_session(self, **kwargs):
+        if 'data' in kwargs and isinstance(kwargs['data'], dict):
+            kwargs['data'].setdefault('redirect_uri', self.redirect_uri)
+            kwargs['data'].setdefault('grant_type', 'authorization_code')
+        return OAuth2Service.get_auth_session(self, **kwargs)
+
+    def get_userdata(self, code):
+        """Returns the relevant userdata from github.
+
+        This function must be called from githun oauth callback
+        and the auth code must be passed as argument.
+        """
+        try:
+            session = self.get_auth_session(
+                    data={'code': code, 'redirect_uri': self.redirect_uri})
+            d = session.get('me').json()
+            return dict(name=d['name'], email=d['email'], service='Facebook')
+        except KeyError, e:
+            logger.error("failed to get user data from facebook. Error: %s",
                          str(e), exc_info=True)

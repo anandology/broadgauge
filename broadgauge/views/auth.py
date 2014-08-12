@@ -12,9 +12,9 @@ from ..template import render_template
 urls = (
     "/login", "login",
     "/logout", "logout",
-    "/oauth/(github|google)", "oauth_callback",
+    "/oauth/(github|google|facebook)", "oauth_callback",
     "(/trainers/signup|/orgs/signup|/login)/reset", "signup_reset",
-    "(/trainers/signup|/orgs/signup|/login)/(github|google)", "signup_redirect",
+    "(/trainers/signup|/orgs/signup|/login)/(github|google|facebook)", "signup_redirect",
     "/trainers/signup", "trainer_signup",
     "/orgs/signup", "org_signup",
 )
@@ -25,6 +25,10 @@ def get_oauth_redirect_url(provider):
     if provider == 'google' and home == 'http://0.0.0.0:8080':
         # google doesn't like 0.0.0.0
         home = 'http://127.0.0.1:8080'
+    elif provider == 'facebook' and home == 'http://127.0.0.1:8080':
+        # facebook doesn't like 127.0.0.1
+        home = 'http://0.0.0.0:8080'
+
     return "{home}/oauth/{provider}".format(home=home, provider=provider)
 
 
