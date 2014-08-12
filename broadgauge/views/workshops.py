@@ -55,19 +55,21 @@ class workshop_edit:
         if not org.can_update(account.get_current_user()):
             return render_template("permission_denied.html")
 
-        i = web.input()
-        form = forms.NewWorkshopForm(i)
-        if web.ctx.method == "POST" and form.validate():
-            workshop.update(
-                title=i.title,
-                description=i.description,
-                expected_participants=i.expected_participants,
-                date=i.date)
-            flash("Thanks for updating the workshop details.")
-            return web.seeother("/workshops/{}".format(workshop.id))
+        if web.ctx.method == 'POST':
+            i = web.input()
+            form = forms.NewWorkshopForm(i)
+            if form.validate():
+                workshop.update(
+                    title=i.title,
+                    description=i.description,
+                    expected_participants=i.expected_participants,
+                    date=i.date)
+                flash("Thanks for updating the workshop details.")
+                return web.seeother("/workshops/{}".format(workshop.id))
         else:
-            return render_template("workshops/edit.html",
-                                   org=org, workshop=workshop, form=form)
+            form = forms.NewWorkshopForm(workshop.dict())
+        return render_template("workshops/edit.html",
+                               org=org, workshop=workshop, form=form)
 
     POST = GET
 
