@@ -50,7 +50,6 @@ class workshop_view:
 class workshop_edit:
     def GET(self, workshop_id):
         workshop = get_workshop(id=workshop_id)
-        self.ensure_updatable(workshop)
 
         org = workshop.get_org()
         if not org.can_update(account.get_current_user()):
