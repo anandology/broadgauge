@@ -14,6 +14,7 @@ db_parameters = dict(dbn='postgres', db='pythonexpress')
 # MAIL SETTINGS
 
 # mail_server = "smtp.googlemail.com"
+# mail_port = 25
 # mail_username = "you@gmail.com"
 # mail_password = "secret"
 # mail_tls = True

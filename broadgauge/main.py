@@ -21,6 +21,7 @@ def load_config_from_env():
         'DATABASE_URL',
         'ADMIN_USER',
         'MAIL_SERVER',
+        'MAIL_POST',
         'MAIL_USERNAME',
         'MAIL_PASSWORD',
         'MAIL_TLS',
