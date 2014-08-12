@@ -16,14 +16,12 @@ urls = (
     "/login", "login",
     "/dashboard", "dashboard",
     "/trainers/signup", "trainer_signup",
-    "/settings/profile", "edit_trainer_profile",
     "(/trainers/signup|/orgs/signup|/login)/reset", "signup_reset",
     "(/trainers/signup|/orgs/signup|/login)/(github|google)", "signup_redirect",
     "/oauth/(github|google)", "oauth_callback",
     "/orgs/signup", "org_signup",
-    "/trainers", "trainers_list",
-    "/trainers/(\d+)", "trainer_view",
 )
+
 def add_urls(module):
     global urls
     module_urls = []
@@ -178,29 +176,6 @@ class trainer_signup:
         return User.find(email=email)
 
 
-class edit_trainer_profile:
-    FORM = forms.TrainerEditProfileForm
-    TEMPLATE = "trainers/edit-profile.html"
-    def GET(self):
-        user = account.get_current_user()
-        if not user or not user.is_trainer():
-            raise web.seeother("/")
-        form = forms.TrainerEditProfileForm(user)
-        return render_template(self.TEMPLATE, form=form, user=user)
-
-    def POST(self):
-        user = account.get_current_user()
-        if not user or not user.is_trainer():
-            raise web.seeother("/")
-        i = web.input()
-        form = self.FORM(i)
-        if not form.validate():
-            return render_template(self.TEMPLATE, form=form, user=user)
-        else:
-            user.update(name=i.name, city=i.city, phone=i.phone, website=i.website, bio=i.bio)
-            raise web.seeother("/dashboard")
-
-
 class org_signup(trainer_signup):
     FORM = forms.OrganizationSignupForm
     TEMPLATE = "orgs/signup.html"
@@ -241,20 +216,4 @@ class signup_reset:
         # TODO: This should be a POST request, not GET
         web.setcookie("oauth", "", expires=-1)
         raise web.seeother(base)
-
-
-class trainers_list:
-    def GET(self):
-        trainers = User.findall(is_trainer=True)
-        return render_template("trainers/index.html", trainers=trainers)
-
-
-class trainer_view:
-    def GET(self, id):
-        trainer = User.find(id=id, is_trainer=True)
-        if not trainer:
-            raise web.notfound()
-        return render_template("trainers/view.html", trainer=trainer)
-
-
 
