@@ -7,11 +7,10 @@ from ..flash import flash
 from .. import account
 from .. import forms
 
-modname = __name__
 urls = (
-    "/admin", modname + ".admin",
-    "/admin/orgs", modname + ".admin_orgs",
-    "/admin/people", modname + ".admin_people",
+    "/admin", "admin",
+    "/admin/orgs", "admin_orgs",
+    "/admin/people", "admin_people",
 )
 
 def has_admins():

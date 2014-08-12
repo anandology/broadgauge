@@ -7,7 +7,6 @@ from . import forms
 from .models import User, Organization, Workshop
 from .template import render_template, context_processor
 from .flash import flash_processor, flash, get_flashed_messages
-from .views import admin
 from .sendmail import sendmail
 # web.config.debug = False
 
@@ -32,7 +31,19 @@ urls = (
     "/workshops/(\d+)/express-interest", "workshop_experss_interest",
     "/workshops/(\d+)/edit", "edit_workshop",
 )
-urls += admin.urls
+def add_urls(module):
+    global urls
+    module_urls = []
+    for path, classname in web.group(module.urls, 2):
+        classname = module.__name__ + "." + classname
+        module_urls.extend([path, classname])
+    urls = urls + tuple(module_urls)
+
+def load_all_views():
+    from .views import admin
+    add_urls(admin)
+
+load_all_views()
 
 app = web.application(urls, globals())
 app.add_processor(flash_processor)
