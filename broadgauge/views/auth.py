@@ -133,7 +133,7 @@ class trainer_signup:
             github=userdata.get('github'),
             is_trainer=True)
         account.set_login_cookie(user.email)
-        sendmail("emails/trainers/welcome.html",to=user.email,trainer=user)
+        sendmail("emails/trainers/welcome.html",subject="Welcome to Python Express", to=user.email,trainer=user)
         raise web.seeother("/dashboard")
 
     def find_user(self, email):
