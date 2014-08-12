@@ -1,7 +1,7 @@
+import web
 from envelopes import Envelope
 
 from .template import render_template
-import default_settings
 
 def sendmail(template, **kwargs):
     """
@@ -33,12 +33,21 @@ def sendmail(template, **kwargs):
                                sub="Hey Friend!", variable1=var, variable2=var2)
     Email sent to some_email.com
     """
-    
+    if not web.config.get('mail_server'):
+        # TODO: log warn message
+        return
+
     envelope = Envelope(
-        from_addr=default_settings.from_email,
+        from_addr=web.config.from_address,
         to_addr=kwargs.pop('to'),
         subject=kwargs.pop('subject'),
         html_body=render_template(template, **kwargs)
     )
-    result = envelope.send(default_settings.smtp, **default_settings.smtp_credentials)
+
+    server = web.config.mail_server
+    username = web.config.mail_username
+    password = web.config.get('mail_password')
+    tls = web.config.get('mail_tls', False)
+
+    result = envelope.send(server, login=username, password=password, tls=tls)
     return result
