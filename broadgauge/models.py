@@ -162,6 +162,12 @@ class Workshop(Model):
         get_db().update("workshop", where='id=$id', vars=self, **kw)
         dict.update(self, kw)
 
+    def get_trainer(self):
+        return self.trainer_id and User.find(id=self.trainer_id)
+
+    def set_trainer(self, trainer):
+        self.update(trainer_id=trainer.id, status='confirmed')
+
     def get_org(self):
         return Organization.find(id=self.org_id)
 

@@ -1,5 +1,5 @@
 import web
-from ..models import Workshop
+from ..models import User, Workshop
 from ..template import render_template
 from ..flash import flash
 from .. import account
@@ -8,7 +8,8 @@ from .. import forms
 
 urls = (
     "/workshops/(\d+)", "workshop_view",
-    "/workshops/(\d+)/edit", "edit_workshop",
+    "/workshops/(\d+)/edit", "workshop_edit",
+    "/workshops/(\d+)/set-trainer", "workshop_set_trainer",
 )
 
 
@@ -46,31 +47,18 @@ class workshop_view:
             return render_template("workshops/view.html", workshop=workshop)
 
 
-class edit_workshop:
+class workshop_edit:
     def GET(self, workshop_id):
-        workshop = get_workshop(id=id)
+        workshop = get_workshop(id=workshop_id)
         self.ensure_updatable(workshop)
 
         org = workshop.get_org()
         if not org.can_update(account.get_current_user()):
             return render_template("permission_denied.html")
 
-        form = forms.NewWorkshopForm(workshop.dict())
-        return render_template("workshops/edit.html",
-                               org=org, workshop=workshop, form=form)
-
-    def POST(self, workshop_id):
-        workshop = get_workshop(id=id)
-        org = workshop.get_org()
-        if not org.can_update(account.get_current_user()):
-            return render_template("permission_denied.html")
-
         i = web.input()
         form = forms.NewWorkshopForm(i)
-        if not form.validate():
-            return render_template("workshops/edit.html",
-                                   org=org, workshop=workshop, form=form)
-        else:
+        if web.ctx.method == "POST" and form.validate():
             workshop.update(
                 title=i.title,
                 description=i.description,
@@ -78,3 +66,26 @@ class edit_workshop:
                 date=i.date)
             flash("Thanks for updating the workshop details.")
             return web.seeother("/workshops/{}".format(workshop.id))
+        else:
+            return render_template("workshops/edit.html",
+                                   org=org, workshop=workshop, form=form)
+
+    POST = GET
+
+class workshop_set_trainer:
+    def GET(self, workshop_id):
+        workshop = get_workshop(id=workshop_id)
+        user = account.get_current_user()
+        if not user or not user.is_admin():
+            return render_template("permission_denied.html")
+
+        form = forms.WorkshopSetTrainerForm(web.input())
+        if web.ctx.method == "POST" and form.validate():
+            trainer = User.find(email=form.email.data)
+            workshop.set_trainer(trainer)
+            flash("Thanks for setting the trainer for this workshop.")
+            raise web.seeother("/workshops/{}".format(workshop.id))
+        return render_template("workshops/set-trainer.html",
+                               workshop=workshop, form=form)
+
+    POST = GET

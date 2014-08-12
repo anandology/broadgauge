@@ -62,11 +62,26 @@ class AdminAddPersonForm(BaseForm):
     city = StringField('City', [validators.Required()])
     trainer = BooleanField('Is He/She a Trainer?')
 
-def valid_user_email(form, field):
-    email = field.data
-    if not User.find(email=email):
-        raise validators.ValidationError("No user found with that email address.")
+class ValidUser:
+    def __init__(self, trainer=False, admin=False):
+        self.trainer = trainer
+        self.admin = admin
+
+    def __call__(self, form, field):
+        email = field.data
+        user = User.find(email=email)
+        if not user:
+            raise validators.ValidationError("No user found with that email address.")
+        if self.trainer and not user.is_trainer():
+            raise validators.ValidationError("User with that email is not a trainer.")
+        if self.admin and not user.is_admin():
+            raise validators.ValidationError("User with that email is not a admin.")
+
 
 class OrgAddMemberForm(BaseForm):
-    email = StringField('E-mail Address', [validators.Required(), valid_user_email])
+    email = StringField('E-mail Address', [validators.Required(), ValidUser()])
     role = StringField('Role', [validators.Required()])
+
+
+class WorkshopSetTrainerForm(BaseForm):
+    email = StringField('E-mail Address', [validators.Required(), ValidUser(trainer=True)])
