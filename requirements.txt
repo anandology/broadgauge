@@ -10,4 +10,5 @@ requests==2.3.0
 unittest2==0.5.1
 wsgiref==0.1.2
 envelopes==0.4
+markdown==2.4.1
 git+git://github.com/webpy/webpy.git#egg=web

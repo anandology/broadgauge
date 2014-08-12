@@ -2,11 +2,13 @@ from jinja2 import Environment, PackageLoader
 import web
 import json
 import md5
+import markdown
 
 env = Environment(loader=PackageLoader('broadgauge', 'templates'))
 env.filters['tojson'] = json.dumps
 env.filters['md5'] = lambda s: md5.md5(s).hexdigest()
 env.filters['datestr'] = web.datestr
+env.filters['markdown'] = markdown.markdown
 _context_processors = []
 
 
