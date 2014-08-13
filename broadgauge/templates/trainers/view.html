@@ -1,3 +1,4 @@
+{% import "macros.html" as macros %}
 {% extends "base.html" %}
 {% block content %}
 
@@ -22,6 +23,18 @@
         </li>
       {% endif %}    
     </ul>
+  </div>
+  <div class="col-md-6">
+    <h2>Your workshops</h2>
+
+    <h4>Upcoming</h4>
+    {% if upcoming_workshops %}
+        {{ macros.workshop_list(upcoming_workshops) }}
+    {% else %}
+        <em>You don't have any upcoming workshops.</em>
+    {% endif %}
+    <h4>Past Workshops</h4>
+    <em>You've not conducted any workshops so far.</em>
   </div>
 </div>
 {% endblock %}

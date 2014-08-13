@@ -3,6 +3,7 @@ import web
 from .. import account
 from .. import forms
 from ..models import User
+from ..models import Workshop
 from ..template import render_template
 
 
@@ -24,7 +25,12 @@ class trainer_view:
         trainer = User.find(id=id, is_trainer=True)
         if not trainer:
             raise web.notfound()
-        return render_template("trainers/view.html", trainer=trainer)
+        upcoming_workshops = Workshop.findall(status='confirmed', trainer_id=trainer.id)
+        completed_workshops = Workshop.findall(status='completed', trainer_id=trainer.id)
+        return render_template("trainers/view.html",
+                               upcoming_workshops=upcoming_workshops,
+                               completed_workshops=completed_workshops,
+                               trainer=trainer)
 
 
 class edit_trainer_profile:
