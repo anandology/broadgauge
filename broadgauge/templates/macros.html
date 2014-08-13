@@ -24,9 +24,16 @@
       <span>{{ workshop.date }}</span>
     </div>
     {% if workshop.status == 'pending' and user and user.is_trainer() %}
-      <form method="POST" action="/workshops/{{workshop.id}}">
-        <button type="submit" class="btn btn-primary" name="action" value="express-interest">Express Interest</button>
-      </form>
+      {% if workshop.is_interested_trainer(user) %}
+        <form method="POST" action="/workshops/{{workshop.id}}">
+          <p>You have expressed interest to conduct this workshop.</p>
+          <button type="submit" class="btn btn-danger" name="action" value="withdraw-interest">Withdraw Interest</button>
+        </form>
+      {% else %}
+        <form method="POST" action="/workshops/{{workshop.id}}">
+          <button type="submit" class="btn btn-primary" name="action" value="express-interest">Express Interest</button>
+        </form>
+      {% endif %}
     {% elif workshop.status == 'confirmed' %}
       <div class="workshop-label"><span style="color: #444; border: 1px solid #ccd; border-radius: 5px; padding: 2px; background: #dde;">Confirmed</span></div>
     {% endif %}
