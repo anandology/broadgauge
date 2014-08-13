@@ -3,8 +3,10 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-md-3">
-    <img src="http://www.gravatar.com/avatar/{{trainer.email | md5}}?s=200&d=mm" class="img-thumbnail">
+  <div style="float: left;">
+    <img src="http://www.gravatar.com/avatar/{{trainer.email | md5}}?s=150&d=mm" class="img-thumbnail">
+  </div>
+  <div style="float: left; margin-left: 10px;">
     <h2>{{ trainer.name }}</h2>
     <ul class="list-unstyled vcard">
       <li><span class="octicon octicon-location"></span> {{trainer.city}}</li>
@@ -20,25 +22,17 @@
           <a href="{{trainer.website}}">{{trainer.website}}</a>
         </li>
       {% endif %}    
-    </ul>    
+    </ul>   
   </div>
-  <div class="col-md-9">
-    <div class="col-md-6 col-sm-12">
-      <div class="panel panel-default">
-        <div class="panel-heading"><h3>Upcoming Workshops</h3></div>
-        <div class="panel-body">
-          {{ macros.workshop_list(upcoming_workshops) }}
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6 col-sm-12">
-      <div class="panel panel-default">
-        <div class="panel-heading"><h3>Recent Workshops</h3></div>
-        <div class="panel-body">
-          <em>{{trainer.name}} has not conducted any workshops so far.</em>
-        </div>
-      </div>
-    </div>
+</div>
+<div class="row"> 
+  <div class="col-md-6 col-sm-12">
+    <h3>Upcoming Workshops</h3>
+    {{ macros.workshop_list(upcoming_workshops) }}
+  </div>
+  <div class="col-md-6 col-sm-12">
+    <h3>Recent Workshops</h3>
+    <em>{{trainer.name}} has not conducted any workshops so far.</em>
   </div>
 </div>
 {% endblock %}
