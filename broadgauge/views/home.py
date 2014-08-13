@@ -30,5 +30,7 @@ class dashboard:
         user = account.get_current_user()
         if not user:
             raise web.seeother("/")
-        return render_template("dashboard.html")
+        upcoming_workshops = Workshop.findall(status='confirmed', trainer_id=user.id)
+        return render_template("dashboard.html",
+                               upcoming_workshops=upcoming_workshops)
 

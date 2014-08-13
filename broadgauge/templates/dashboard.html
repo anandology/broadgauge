@@ -21,8 +21,11 @@
     <h2>Your workshops</h2>
 
     <h4>Upcoming</h4>
-    <em>You don't have any upcoming workshops.</em>
-
+    {% if upcoming_workshops %}
+        {{ macros.workshop_list(upcoming_workshops) }}
+    {% else %}
+        <em>You don't have any upcoming workshops.</em>
+    {% endif %}
     <h4>Past Workshops</h4>
     <em>You've not conducted any workshops so far.</em>
   </div>
