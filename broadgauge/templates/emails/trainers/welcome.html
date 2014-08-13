@@ -1,7 +1,12 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<p>Hello {{trainer.name}},</p>
 
-Hello {{trainer.name}},
+<p>Thanks for signing up as trainer on {{link("Python Express", "http://pythonexpress.in")}}.</p></p>
 
-Thanks for signing up as trainer on Python Express.
-
-Regards,
-Python Express Team
+<p>
+Regards,<br/>
+Python Express Team<br/>
+{{link("http://pythonexpress.in/", "http://pythonexpress.in/")}}
+</p>
+{% endblock %}
