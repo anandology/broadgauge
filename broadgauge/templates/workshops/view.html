@@ -12,8 +12,7 @@
   </div>
 {% endmacro %}
 
-
-{% macro render_interested_trainers(org, workshop, user) %}
+{% macro render_interested_trainers() %}
   {% if user and org.is_member(user) %}
     <h3>Interested Trainers</h3>
     {% set trainers = workshop.get_interested_trainers() %}
@@ -28,9 +27,27 @@
       <em>No trainers expressed interest so far.</em>
     {% endif %}
   {% elif user and user.is_trainer() %}
+    {% if workshop.is_interested_trainer(user) %}
+      <div class="well well-sm">
+        <p>You have expressed interest to conduct this workshop.</p>
+        <form method="POST" action="/workshops/{{workshop.id}}">
+          <button type="submit" class="btn btn-primary" name="action" value="withdraw-interest">Withdraw Interest</button>
+        </form>
+      </div>
+    {% else %}
+      <div class="well well-sm">
+        <p>This workshop needs a trainer. Are you interested?</p>
+
+        <form method="POST" action="/workshops/{{workshop.id}}">
+          <button type="submit" class="btn btn-primary" name="action" value="express-interest">Express Interest</button>
+        </form>
+      </div>
+    {% endif %}
+  {% elif not user %}
     <div class="well well-sm">
-      <p>This workshop need a trainer. Are you interested?</p>
-      <p><a href="#" class="btn btn-primary">Express Interest</a></p>
+      <p>Are you a Pyhton expert?</p>
+
+      <p>Please <a href="/trainers/signup">sign up</a> to express interest to conduct this workshop.</p>
     </div>
   {% endif %}
 {% endmacro %}

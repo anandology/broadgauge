@@ -34,6 +34,8 @@ class workshop_view:
         i = web.input(action=None)
         if i.action == "express-interest":
             return self.POST_express_interest(workshop, i)
+        elif i.action == "withdraw-interest":
+            return self.POST_withdraw_interest(workshop, i)
         else:
             return render_template("workshops/view.html", workshop=workshop)
 
@@ -42,6 +44,16 @@ class workshop_view:
         if user and user.is_trainer():
             workshop.record_interest(user)
             flash("Thank you for experessing interest to conduct this workshop.")
+            raise web.seeother("/workshops/{}".format(workshop.id))
+        else:
+            return render_template("workshops/view.html", workshop=workshop)
+
+    def POST_withdraw_interest(self, workshop, i):
+        user = account.get_current_user()
+        if user and user.is_trainer():
+            workshop.cancel_interest(user)
+            # TODO: Improve this message
+            flash("Done! Your interest to conduct the workshop has been cancelled.")
             raise web.seeother("/workshops/{}".format(workshop.id))
         else:
             return render_template("workshops/view.html", workshop=workshop)

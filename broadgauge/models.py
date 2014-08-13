@@ -177,6 +177,14 @@ class Workshop(Model):
         """
         get_db().insert("workshop_trainers", workshop_id=self.id, trainer_id=trainer.id)
 
+    def cancel_interest(self, trainer):
+        """Record that the given trainer has shown interest to conduct
+        the this workshop.
+        """
+        get_db().delete("workshop_trainers",
+            where="workshop_id=$self.id AND trainer_id=$trainer.id",
+            vars=locals())
+
     def get_interested_trainers(self):
         db = get_db()
         rows = db.where("workshop_trainers", workshop_id=self.id)
@@ -186,6 +194,12 @@ class Workshop(Model):
             return [User(row) for row in rows]
         else:
             return []
+
+    def is_interested_trainer(self, user):
+        rows = get_db().where("workshop_trainers",
+            workshop_id=self.id,
+            trainer_id=user.id).list()
+        return bool(rows)
 
     def dict(self):
         d = dict(self)
