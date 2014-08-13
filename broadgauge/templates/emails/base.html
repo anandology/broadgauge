@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <style type="text/css">
+      body {
+        padding: 0px; 
+        margin: 0px; 
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      }
+      .body-wrapper {
+        background: #eee; 
+        border-top: 5px solid #ccc;
+        padding: 20px 0px;
+      }
+      .wrapper {
+        margin: 10px auto; 
+        width: 600px; 
+        background: white; 
+        border: 1px solid #A8C0CF;
+      }
       /* for clients that respect style in head */
       @media (max-width: 600px)  {
         .wrapper {
@@ -12,21 +28,32 @@
           width: 100%;
         }
       }
+      .heading {
+        background: #C8E0EF;
+        padding: 20px;
+      }
+      .heading h1 {
+        margin: 0px; 
+        padding: 0px; 
+        font-size: 1.5em;
+        color: black;
+      }
       a, a:visited {
         color: #428bca;
       }
+      .container {
+        padding: 20px; 
+        line-height: 1.5em;
+      }
     </style>
   </head>
-  {% macro link(title, href) %}
-    <a href="{{href}}" style="color: #428bca">{{title}}</a>
-  {% endmacro %}
-  <body style='padding: 0px; margin: 0px; font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;'>
-    <div class="body-wrapper" style="background: #eee; border-top: 5px solid #ccc; padding: 20px 0px;">
-      <div class="wrapper" style="margin: 10px auto; width: 600px; background: white; border: 1px solid #A8C0CF;">
-        <div class="heading" style="background: #C8E0EF; padding: 20px;">
-          <h1 style="margin: 0px; padding: 0px; font-size: 1.5em; color: black;">Python Express</h1>
+  <body>
+    <div class="body-wrapper">
+      <div class="wrapper">
+        <div class="heading">
+          <h1 style="">Python Express</h1>
         </div>
-        <div class="container" style="padding: 20px; line-height: 1.5em;">
+        <div class="container">
           {% block content %}
           {% endblock %}
         </div>

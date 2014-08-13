@@ -11,4 +11,7 @@ unittest2==0.5.1
 wsgiref==0.1.2
 envelopes==0.4
 markdown==2.4.1
+BeautifulSoup==3.2.1
+cssutils==1.0
+pynliner==0.5.1
 git+git://github.com/webpy/webpy.git#egg=web

@@ -1,4 +1,5 @@
 import web
+import pynliner
 from envelopes import Envelope
 
 from .template import render_template
@@ -37,11 +38,16 @@ def sendmail(template, **kwargs):
         # TODO: log warn message
         return
 
+    html = render_template(template, **kwargs)
+
+    # inline CSS to make mail clients happy
+    html = pynliner.fromString(html)
+
     envelope = Envelope(
         from_addr=web.config.from_address,
         to_addr=kwargs.pop('to'),
         subject=kwargs.pop('subject'),
-        html_body=render_template(template, **kwargs)
+        html_body=html
     )
 
     server = web.config.mail_server
