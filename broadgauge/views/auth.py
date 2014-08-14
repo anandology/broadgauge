@@ -104,7 +104,6 @@ class trainer_signup:
     TEMPLATE = "trainers/signup.html"
 
     def GET(self):
-        form = self.FORM()
         userdata = get_oauth_data()
         if userdata:
             # if already logged in, send him to dashboard
@@ -114,8 +113,7 @@ class trainer_signup:
                     user.make_trainer()
                 account.set_login_cookie(user.email)
                 raise web.seeother("/dashboard")
-            form.name.data = userdata['name']
-            form.username.data = userdata.get('username','')
+            form = self.FORM(userdata)
         return render_template(self.TEMPLATE, form=form, userdata=userdata)
 
     def POST(self):
