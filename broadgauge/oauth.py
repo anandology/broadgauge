@@ -33,7 +33,7 @@ class GitHub(OAuth2Service):
     def get_authorize_url(self, **params):
         params.setdefault('response_type', 'code')
         params.setdefault('redirect_uri', self.redirect_uri)
-        params.setdefault('scope', 'email')
+        params.setdefault('scope', 'user:email')
         return OAuth2Service.get_authorize_url(self, **params)
 
     def get_auth_session(self, **kwargs):
@@ -50,15 +50,27 @@ class GitHub(OAuth2Service):
         try:
             session = self.get_auth_session(data={'code': code})
             d = session.get('user').json()
+            email = self.get_verified_email(session)
+            if not email:
+                logger.error("No verified email found for this user {}".format(d['login']))
+                return
             return dict(
                 name=d["name"],
-                email=d["email"],
+                email=email,
                 username=d["login"],
                 github=d["login"],
                 service="GitHub")
         except KeyError, e:
             logger.error("failed to get user data from github. Error: %s",
                          str(e))
+
+    def get_verified_email(self, session):
+        """Finds verified email of the user using oauth session.
+        """
+        data = session.get('https://api.github.com/user/emails').json()
+        emails = [d['email'] for d in data if d['verified'] and d['primary']]
+        if emails:
+            return emails[0]
 
 
 class Google(OAuth2Service):
