@@ -139,7 +139,11 @@ class trainer_signup:
             github=userdata.get('github'),
             is_trainer=True)
         account.set_login_cookie(user.email)
-        sendmail("emails/trainers/welcome.html",subject="Welcome to Python Express", to=user.email,trainer=user)
+        flash("Thank you for signing up as a trainer!")
+        sendmail("emails/trainers/welcome.html",
+            subject="Welcome to Python Express",
+            to=user.email,
+            trainer=user)
         raise web.seeother("/dashboard")
 
     def find_user(self, email):
@@ -162,6 +166,7 @@ class org_signup(trainer_signup):
                                city=i.city)
         org.add_member(user, i.role)
         account.set_login_cookie(user.email)
+        flash("Thank you for registering your organization with Python Express!")
         raise web.seeother("/orgs/{}".format(org.id))
 
 
