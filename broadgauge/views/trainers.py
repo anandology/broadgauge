@@ -39,7 +39,11 @@ class edit_trainer_profile:
         if not user or not user.is_trainer():
             raise web.seeother("/")
 
-        i = web.input()
+        if web.ctx.method == 'POST':
+            i = web.input()
+        else:
+            i = user
+        print i
         form = forms.TrainerEditProfileForm(i)
 
         if web.ctx.method == 'POST' and form.validate():
