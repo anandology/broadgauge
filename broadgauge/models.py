@@ -63,6 +63,9 @@ class Model(web.storage):
         id = get_db().insert(cls.TABLE, **kw)
         return cls.find(id=id)
 
+    def __hash__(self):
+        return self.id
+
 
 class User(Model):
     TABLE = "users"
@@ -233,6 +236,22 @@ class Workshop(Model):
             workshop_id=self.id,
             author_id=user.id,
             comment=comment)
+
+    def get_followers(self):
+        followers = set()
+        # add org members
+        followers.update(m for m, role in self.get_org().get_members())
+
+        # add trainers
+        if self.status == 'pending':
+            followers.update(self.get_interested_trainers())
+        elif self.status == 'confirmed':
+            followers.add(self.get_trainer)
+
+        # add commenters
+        followers.update(c.get_author() for c in self.get_comments())
+        print followers
+        return list(followers)
 
     def dict(self):
         d = dict(self)

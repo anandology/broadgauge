@@ -2,6 +2,7 @@ import web
 from ..models import User, Workshop
 from ..template import render_template
 from ..flash import flash
+from ..sendmail import sendmail
 from .. import account
 from .. import forms
 
@@ -65,7 +66,15 @@ class workshop_view:
         if not i.get('comment', '').strip():
             return
         if user:
-            workshop.add_comment(user, i.comment)
+            comment = workshop.add_comment(user, i.comment)
+            subject = "New comment on {}".format(workshop.title)
+            for u in workshop.get_followers():
+                sendmail("emails/comment-added.html",
+                    to=u.email,
+                    subject=subject,
+                    workshop=workshop,
+                    user=u,
+                    comment=comment)
             flash("Done! Your comment has been added to this workshop.")
             raise web.seeother("/workshops/{}".format(workshop.id))
 

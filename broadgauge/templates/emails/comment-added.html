@@ -1,0 +1,24 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<p>Hello {{user.name}},</p>
+
+<p>The following comment has has been added on
+<a href="http://pythonexpress.in/workshops/{{workshop.id}}">{{workshop.title}}</a> page.
+<p>
+
+<div class="comment">
+  <div class="comment-head">
+    <span class="author">{{comment.get_author().name}}</span>
+    <span class="date">{{comment.created.strftime("%d %b %Y")}}</span>
+  </div>
+  <div class="comment-body">
+    {{comment.comment | markdown}}
+  </div>
+</div>
+
+<p>
+Regards,<br/>
+Python Express Team<br/>
+<a href="http://pythonexpress.in/">http://pythonexpress.in/</a>
+</p>
+{% endblock %}
