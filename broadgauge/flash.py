@@ -17,9 +17,12 @@ import web
 
 
 def get_flashed_messages():
-    flashes = web.ctx.get('flashes', [])
-    web.ctx.flashes = []
-    return flashes
+    # cache the flashed messages in request context to support
+    # multiple invocations of this function.
+    if "flashed_messages" not in web.ctx:
+        web.ctx.flashed_messages = web.ctx.get('flashes', [])
+        web.ctx.flashes = []
+    return web.ctx.flashed_messages
 
 
 def flash(message, category="info"):

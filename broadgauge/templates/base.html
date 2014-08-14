@@ -55,6 +55,8 @@
       </div>
     </nav>
 
+    {% block content_wrapper %}
+
     <div class="container">
       {% block flash_messages %}
         {% set flashed_messages = get_flashed_messages() %}
@@ -69,7 +71,6 @@
       {% endblock %}
     </div>
 
-    {% block content_wrapper %}
     <div class="container">
       {% block content %}
       {% endblock %}
