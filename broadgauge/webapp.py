@@ -1,13 +1,8 @@
 import web
-import json
-
 from . import account
-from . import oauth
-from . import forms
-from .models import User, Organization, Workshop
+from .models import  Workshop
 from .template import render_template, context_processor
-from .flash import flash_processor, flash, get_flashed_messages
-from .sendmail import sendmail
+from .flash import flash_processor, get_flashed_messages
 # web.config.debug = False
 
 urls = ()
@@ -39,6 +34,9 @@ load_all_views()
 
 app = web.application(urls, globals())
 app.add_processor(flash_processor)
+
+app.notfound = lambda: web.notfound(render_template("404.html"))
+app.internalerror = lambda: web.internalerror(render_template("500.html"))
 
 @context_processor
 def inject_user():
