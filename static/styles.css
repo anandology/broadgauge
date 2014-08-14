@@ -92,3 +92,16 @@ li.workshop .workshop-notes {
 .flashed-messages {
   margin: 20px 0px;
 }
+
+.comment {
+  border-top: 1px solid #ddd;
+  padding: 10px;
+}
+
+.comments .comment:last-child {
+  border-bottom: 1px solid #ddd;
+}
+
+.comment-head span.author {
+  font-weight: bold;
+}

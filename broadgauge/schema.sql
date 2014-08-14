@@ -46,3 +46,12 @@ create table workshop_trainers (
     tstamp timestamp default (current_timestamp at time zone 'UTC'),
     unique (workshop_id, trainer_id)
 );
+
+create table comment (
+    id serial primary key,
+    parent_id integer references comment,
+    workshop_id integer references workshop,
+    author_id integer references users,
+    comment text,
+    created timestamp default (current_timestamp at time zone 'UTC')
+);

@@ -67,31 +67,51 @@
   <a class="small" href="/workshops/{{workshop.id}}/edit">Edit</a>
   {% endif %}
 </h1>
-<div class="row">
-  <div class="col-md-9 workshop-details">
-    <div class="workshop-venue">
-      <span class="octicon octicon-location"></span>
-      <span class="workshop-org">{{ org.name }}</span>,
-      <span class="city">{{ org.city }}</span>
+<div class="workshop-venue">
+  <span class="octicon octicon-location"></span>
+  <span class="workshop-org">{{ org.name }}</span>,
+  <span class="city">{{ org.city }}</span>
+</div>
+<div>
+  <span class="octicon octicon-calendar"></span>
+  <span>{{ workshop.date }}</span>
+</div>
+
+<div>
+{{ workshop.description | markdown }}
+</div>
+
+{% if workshop.status == 'pending' %}
+  {{render_interested_trainers()}}
+{% elif workshop.status == 'confirmed' %}
+  <h3>Trainer</h3>
+  {{render_trainer(workshop.get_trainer())}}
+{% endif %}
+
+<div class="comments">
+  <h3>Comments</h3>
+  <ul class="list-unstyled">
+    {% for c in workshop.get_comments() %}
+      <div class="comment panelx panelx-default">
+        <div class="comment-head panelx-heading">
+          <span class="author">{{c.get_author().name}}</span>
+          <span class="date">{{ c.created | datestr }}</span>
+        </div>
+        <div class="comment-body panelx-body">{{ c.comment | markdown }}</div>
+      </div>
+    {% endfor %}
+  </ul>
+  {% if user %}
+    <h4>Add New Comment</h4>
+    <div class="add-comment">
+      <form class="form" method="POST">
+        <div class="form-group">
+          <textarea name="comment" rows="3" style="width: 100%;"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" name="action" value="add-comment">Add Comment</button>
+      </form>
     </div>
-    <div>
-      <span class="octicon octicon-calendar"></span>
-      <span>{{ workshop.date }}</span>
-    </div>
-
-    <div>
-    {{ workshop.description | markdown }}
-    </div>
-
-    {% if workshop.status == 'pending' %}
-      {{render_interested_trainers()}}
-    {% elif workshop.status == 'confirmed' %}
-      <h3>Trainer</h3>
-      {{render_trainer(workshop.get_trainer())}}
-    {% endif %}
-
-
-  </div>
+  {% endif %}
 </div>
 
 {% endblock %}

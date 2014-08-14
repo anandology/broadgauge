@@ -36,6 +36,8 @@ class workshop_view:
             return self.POST_express_interest(workshop, i)
         elif i.action == "withdraw-interest":
             return self.POST_withdraw_interest(workshop, i)
+        elif i.action == "add-comment":
+            return self.POST_add_comment(workshop, i)
         else:
             return render_template("workshops/view.html", workshop=workshop)
 
@@ -57,6 +59,15 @@ class workshop_view:
             raise web.seeother("/workshops/{}".format(workshop.id))
         else:
             return render_template("workshops/view.html", workshop=workshop)
+
+    def POST_add_comment(self, workshop, i):
+        user = account.get_current_user()
+        if not i.get('comment', '').strip():
+            return
+        if user:
+            workshop.add_comment(user, i.comment)
+            flash("Done! Your comment has been added to this workshop.")
+            raise web.seeother("/workshops/{}".format(workshop.id))
 
 
 class workshop_edit:

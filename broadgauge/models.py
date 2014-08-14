@@ -58,6 +58,11 @@ class Model(web.storage):
         """
         return cls.where(**kw).list()
 
+    @classmethod
+    def new(cls, **kw):
+        id = get_db().insert(cls.TABLE, **kw)
+        return cls.find(id=id)
+
 
 class User(Model):
     TABLE = "users"
@@ -220,7 +225,22 @@ class Workshop(Model):
             trainer_id=user.id).list()
         return bool(rows)
 
+    def get_comments(self):
+        return Comment.findall(workshop_id=self.id, order='created')
+
+    def add_comment(self, user, comment):
+        return Comment.new(
+            workshop_id=self.id,
+            author_id=user.id,
+            comment=comment)
+
     def dict(self):
         d = dict(self)
         d['date'] = self.date and self.date.isoformat()
         return d
+
+class Comment(Model):
+    TABLE = "comment"
+
+    def get_author(self):
+        return User.find(id=self.author_id)
