@@ -50,11 +50,11 @@ def sendmail(template, **kwargs):
         html_body=html
     )
 
-    server = web.config.mail_server
-    port = int(web.config.get('mail_port', 25))
-    username = web.config.mail_username
-    password = web.config.get('mail_password')
-    tls = web.config.get('mail_tls', False)
+    server = web.config.smtp_server
+    port = int(web.config.get('smtp_port', 25))
+    username = web.config.smtp_username
+    password = web.config.get('smtp_password')
+    tls = web.config.get('smtp_starttls', False)
 
     result = envelope.send(
                 host=server,

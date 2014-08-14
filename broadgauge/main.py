@@ -39,6 +39,11 @@ def load_config_from_env():
 load_default_config()
 load_config_from_env()
 from . import webapp
+from . import utils
+
+# send email on every internal error
+utils.setup_error_emails(webapp.app)
+
 application = webapp.app.wsgifunc()
 
 # Heroku doesn't handle static files, use StaticMiddleware.

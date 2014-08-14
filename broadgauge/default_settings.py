@@ -16,9 +16,12 @@ db_parameters = dict(dbn='postgres', db='pythonexpress')
 
 # MAIL SETTINGS
 
-# mail_server = "smtp.googlemail.com"
-# mail_port = 25
-# mail_username = "you@gmail.com"
-# mail_password = "secret"
-# mail_tls = True
+# smtp_server = "smtp.googlemail.com"
+# smtp_port = 25
+# smtp_username = "you@gmail.com"
+# smtp_password = "secret"
+# smtp_starttls = True
 # from_address = "noreply@yourwebsite.com"
+
+## to enable email on internal errors, uncomment the following line.
+# bug_master = "you@example.com"
