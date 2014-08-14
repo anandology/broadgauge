@@ -21,7 +21,7 @@
     </div>
     <div class="workshop-date">
       <span class="octicon octicon-calendar"></span>
-      <span>{{ workshop.date }}</span>
+      <span>{{ workshop.date.strftime("%d %b %Y") }}</span>
     </div>
     {% if workshop.status == 'pending' and user and user.is_trainer() %}
       {% if workshop.is_interested_trainer(user) %}
