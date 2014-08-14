@@ -1,5 +1,6 @@
 import web
-
+import string
+import random
 
 @web.memoize
 def get_db():
@@ -63,8 +64,26 @@ class User(Model):
 
     @classmethod
     def new(cls, name, email, phone=None, **kw):
+        if 'username' not in kw:
+            kw['username'] = cls._suggest_username(email)
+
         id = get_db().insert("users", name=name, email=email, phone=phone, **kw)
         return cls.find(id=id)
+
+    @staticmethod
+    def _suggest_username(email):
+        """suggests a username based on email.
+        """
+        basename = email.split("@")[0]
+        username = basename
+        for i in range(1, 100):
+            if not User.find(username=username):
+                return username
+            username = "{}-{}".format(basename, i)
+
+        # select a random prefix it above attempt fails
+        suffix = "".join(random.choice(string.lowercase) for i in range(4))
+        return "{}-{}".format(basename, suffix)
 
     def update(self, **kw):
         get_db().update("users", where='id=$id', vars=self, **kw)

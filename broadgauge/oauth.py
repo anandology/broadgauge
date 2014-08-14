@@ -33,6 +33,7 @@ class GitHub(OAuth2Service):
     def get_authorize_url(self, **params):
         params.setdefault('response_type', 'code')
         params.setdefault('redirect_uri', self.redirect_uri)
+        params.setdefault('scope', 'email')
         return OAuth2Service.get_authorize_url(self, **params)
 
     def get_auth_session(self, **kwargs):
@@ -49,8 +50,12 @@ class GitHub(OAuth2Service):
         try:
             session = self.get_auth_session(data={'code': code})
             d = session.get('user').json()
-            return dict(name=d['name'], email=d['email'], github=d['login'],
-                        service='GitHub')
+            return dict(
+                name=d["name"],
+                email=d["email"],
+                username=d["login"],
+                github=d["login"],
+                service="GitHub")
         except KeyError, e:
             logger.error("failed to get user data from github. Error: %s",
                          str(e))
@@ -92,7 +97,13 @@ class Google(OAuth2Service):
             session = self.get_auth_session(data={'code': code},
                                             decoder=json.loads)
             d = session.get('userinfo').json()
-            return dict(name=d['name'], email=d['email'], service='Google')
+            # suggest basename of the email as username
+            username = d['email'].split("@")[0]
+            return dict(
+                name=d['name'],
+                email=d['email'],
+                username=username,
+                service='Google')
         except KeyError, e:
             logger.error("failed to get user data from google. Error: %s",
                          str(e), exc_info=True)
@@ -132,7 +143,13 @@ class Facebook(OAuth2Service):
             session = self.get_auth_session(
                     data={'code': code, 'redirect_uri': self.redirect_uri})
             d = session.get('me').json()
-            return dict(name=d['name'], email=d['email'], service='Facebook')
+            # suggest basename of the email as username
+            username = d['email'].split("@")[0]
+            return dict(
+                name=d['name'],
+                email=d['email'],
+                username=username,
+                service='Facebook')
         except KeyError, e:
             logger.error("failed to get user data from facebook. Error: %s",
                          str(e), exc_info=True)

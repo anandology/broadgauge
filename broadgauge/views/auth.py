@@ -114,7 +114,8 @@ class trainer_signup:
                     user.make_trainer()
                 account.set_login_cookie(user.email)
                 raise web.seeother("/dashboard")
-            form.name.value = userdata['name']
+            form.name.data = userdata['name']
+            form.username.data = userdata.get('username','')
         return render_template(self.TEMPLATE, form=form, userdata=userdata)
 
     def POST(self):
@@ -132,6 +133,7 @@ class trainer_signup:
         user = User.new(
             name=i.name,
             email=userdata['email'],
+            username=i.username,
             phone=i.phone,
             city=i.city,
             github=userdata.get('github'),

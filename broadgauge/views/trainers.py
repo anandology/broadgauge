@@ -9,7 +9,7 @@ from ..template import render_template
 
 urls = (
     "/trainers", "trainers_list",
-    "/trainers/(\d+)", "trainer_view",
+    "/trainers/(.+)", "trainer_view",
     "/settings/profile", "edit_trainer_profile",
 )
 
@@ -21,8 +21,8 @@ class trainers_list:
 
 
 class trainer_view:
-    def GET(self, id):
-        trainer = User.find(id=id, is_trainer=True)
+    def GET(self, username):
+        trainer = User.find(username=username, is_trainer=True)
         if not trainer:
             raise web.notfound()
         upcoming_workshops = Workshop.findall(status='confirmed', trainer_id=trainer.id)

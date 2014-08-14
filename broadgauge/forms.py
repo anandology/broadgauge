@@ -28,10 +28,18 @@ class BaseForm(Form):
 
 class TrainerSignupForm(BaseForm):
     name = StringField('Name', [validators.Required()])
+    username = StringField('Username', [
+        validators.Required(), 
+        validators.Length(min=3),
+        validators.Regexp('^[a-zA-Z0-9._-]+$', message="Only letters, numbers, dot,")])
     phone = StringField('Phone', [validators.Required()])
     city = StringField('City', [validators.Required()])
     # No need to have email as it is alreday available from session
 
+    def valid_username(self, field):
+        if User.find(username=field.data):
+            raise validators.ValidationError("Username already used.")
+            
 
 class OrganizationSignupForm(BaseForm):
     name = StringField('Name', [validators.Required()])
