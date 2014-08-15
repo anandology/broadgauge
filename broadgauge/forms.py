@@ -3,10 +3,9 @@
 import web
 from wtforms import (
     Form,
-    BooleanField, DateField, IntegerField,
+    BooleanField, DateField, IntegerField, 
     StringField, TextAreaField,
     validators)
-from datetime import date
 
 from .models import User
 
@@ -30,7 +29,7 @@ class BaseForm(Form):
 class TrainerSignupForm(BaseForm):
     name = StringField('Name', [validators.Required()])
     username = StringField('Username', [
-        validators.Required(),
+        validators.Required(), 
         validators.Length(min=3),
         validators.Regexp('^[a-zA-Z0-9._-]+$', message="Only letters, numbers, dot,")])
     phone = StringField('Phone', [validators.Required()])
@@ -40,7 +39,7 @@ class TrainerSignupForm(BaseForm):
     def valid_username(self, field):
         if User.find(username=field.data):
             raise validators.ValidationError("Username already used.")
-
+            
 
 class OrganizationSignupForm(BaseForm):
     name = StringField('Name', [validators.Required()])
@@ -59,11 +58,6 @@ class NewWorkshopForm(BaseForm):
     description = TextAreaField('Description', [validators.Required()])
     expected_participants = IntegerField('Expected number of pariticipants', [validators.Required()])
     date = DateField('Preferred Date', [validators.Required()])
-
-    def validate_date(form, field):
-        today = date.today()
-        if field.data < today:
-            raise validators.ValidationError('Date must be a future date')
 
 class AdminAddOrgForm(BaseForm):
     name = StringField('Name', [validators.Required()])

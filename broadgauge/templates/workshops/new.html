@@ -1,10 +1,5 @@
 {% from "forms.html" import render_field %}
 {% extends "orgs/view.html" %}
-
-{% block endhead %}
-<link rel="stylesheet" href="/static/bootstrap/css/datepicker.css">
-{% endblock %}
-
 {% block org_content %}
 <h1>Schedule a new workshop</h1>
 
@@ -20,13 +15,4 @@
     </form>
   </div>
 </div>
-{% endblock %}
-
-{% block endbody %}
-<script src="/static/bootstrap/js/bootstrap-datepicker.js"></script>
-<script>
-  $('#date').datepicker({
-    format: 'yyyy-mm-dd'
-  });
-</script>
 {% endblock %}
