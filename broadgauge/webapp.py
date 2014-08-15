@@ -48,6 +48,7 @@ def inject_user():
         'site_title': web.config.get('site_title', 'Broad Gauge'),
         'get_flashed_messages': get_flashed_messages,
         'get_oauth_services': get_oauth_services,
+        'get_config': web.config.get,
         'get_pending_workshops': lambda: Workshop.findall(status='pending'),
         'get_confirmed_workshops': lambda: Workshop.findall(status='confirmed'),
     }

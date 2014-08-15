@@ -37,6 +37,12 @@ def load_config_from_env():
         if k in os.environ:
             web.config[k.lower()] = os.environ[k]
 
+    # auto add all keys for format BROADGAUGE_xxx to config
+    for k in os.environ:
+        if k.startswith('BROADGAUGE_'):
+            k2 = k[len('BROADGAUGE_'):].lower()
+            web.config[k2] = os.environ[k]
+
 load_default_config()
 load_config_from_env()
 from . import webapp
