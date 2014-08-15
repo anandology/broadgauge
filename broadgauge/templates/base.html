@@ -21,6 +21,8 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    {% block endhead %}
+    {% endblock %}
   </head>
   <body>
     <nav class="navbar navbar-default" role="navigation">
@@ -106,6 +108,9 @@
           ga('send', 'pageview');
         </script>
       {% endif %}
+    {% endblock %}
+
+    {% block endbody %}
     {% endblock %}
   </body>
 </html>
