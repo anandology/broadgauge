@@ -113,7 +113,7 @@ class trainer_signup:
                     user.make_trainer()
                 account.set_login_cookie(user.email)
                 raise web.seeother("/dashboard")
-            form = self.FORM(userdata)
+        form = self.FORM(userdata or {})
         return render_template(self.TEMPLATE, form=form, userdata=userdata)
 
     def POST(self):
