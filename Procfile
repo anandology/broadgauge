@@ -1,2 +1,2 @@
 
-web: gunicorn broadgauge.main:application
+web: gunicorn -w 4 broadgauge.main:application
