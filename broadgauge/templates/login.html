@@ -13,9 +13,9 @@
     <br/>
     <br/>
     <div>
-      <a href="/login/github" class="btn btn-primary">GitHub</a>
-      <a href="/login/google" class="btn btn-primary">Google</a>
-      <a href="/login/facebook" class="btn btn-primary">Facebook</a>
+      {% for service in get_oauth_services() %}
+        <a href="/login/{{service.name}}" class="btn btn-primary">{{service.title}}</a>
+      {% endfor %}
     </div>
   </div>
 {% endif %}

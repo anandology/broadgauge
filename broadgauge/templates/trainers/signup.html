@@ -9,9 +9,9 @@
     <br/>
     <br/>
     <div>
-      <a href="/trainers/signup/github" class="btn btn-primary">GitHub</a>
-      <a href="/trainers/signup/google" class="btn btn-primary">Google</a>
-      <a href="/trainers/signup/facebook" class="btn btn-primary">Facebook</a>
+      {% for service in get_oauth_services() %}
+        <a href="/trainers/signup/{{service.name}}" class="btn btn-primary">{{service.title}}</a>
+      {% endfor %}
     </div>
   </div>
 {% else %}

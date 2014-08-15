@@ -16,6 +16,20 @@ def oauth_service(service, redirect_uri):
     elif service == 'facebook':
         return Facebook(redirect_uri)
 
+def get_oauth_services():
+    """Returns an iterator over the available oauth services.
+
+    Each entry in the iterator will be a storage object containing
+    id and name of the service. For example:
+
+        web.storage(name='gitbub', title='GitHub')
+    """
+    if 'github_client_id' in web.config:
+        yield web.storage(name='github', title='GitHub')
+    if 'google_client_id' in web.config:
+        yield web.storage(name='google', title='Google')
+    if 'facebook_client_id' in web.config:
+        yield web.storage(name='facebook', title='Facebook')
 
 class GitHub(OAuth2Service):
     """GitHub OAuth integration.

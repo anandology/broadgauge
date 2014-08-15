@@ -1,8 +1,9 @@
 import web
 from . import account
-from .models import  Workshop
-from .template import render_template, context_processor
 from .flash import flash_processor, get_flashed_messages
+from .models import  Workshop
+from .oauth import get_oauth_services
+from .template import render_template, context_processor
 # web.config.debug = False
 
 urls = ()
@@ -46,6 +47,7 @@ def inject_user():
         'request_path': web.ctx.path,
         'site_title': web.config.get('site_title', 'Broad Gauge'),
         'get_flashed_messages': get_flashed_messages,
+        'get_oauth_services': get_oauth_services,
         'get_pending_workshops': lambda: Workshop.findall(status='pending'),
         'get_confirmed_workshops': lambda: Workshop.findall(status='confirmed'),
     }
