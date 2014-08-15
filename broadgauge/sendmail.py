@@ -4,7 +4,7 @@ from envelopes import Envelope
 
 from .template import render_template
 
-def sendmail(template, **kwargs):
+def sendmail(template, to, subject, headers=None, **kwargs):
     """
     Sends an email with the selected html template.
     html templates can be found inside the broadguage/templates
@@ -34,7 +34,7 @@ def sendmail(template, **kwargs):
                                sub="Hey Friend!", variable1=var, variable2=var2)
     Email sent to some_email.com
     """
-    if not web.config.get('mail_server'):
+    if not web.config.get('smtp_server'):
         # TODO: log warn message
         return
 
@@ -45,9 +45,10 @@ def sendmail(template, **kwargs):
 
     envelope = Envelope(
         from_addr=web.config.from_address,
-        to_addr=kwargs.pop('to'),
-        subject=kwargs.pop('subject'),
-        html_body=html
+        to_addr=to,
+        subject=subject,
+        html_body=html,
+        headers=headers
     )
 
     server = web.config.smtp_server

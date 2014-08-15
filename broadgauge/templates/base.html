@@ -39,10 +39,15 @@
             {% if user and user.is_admin() %}
             <li><a href="/admin">Admin</a></li>
             {% endif %}
+
           </ul>
+          <div class="nav navbar-form navbar-left">
+            <a href="/contact" class="btn btn-warning" style="padding: 5px;">Contact Us</a>
+          </div>
+
           <ul class="nav navbar-nav navbar-right">
             {% if user %}
-              <li><div style="padding: 15px 0px;">Welcome <strong>{{user.name}}</strong></div></li>
+              <li><div class="navbar-text" style="">Welcome <strong>{{user.name}}</strong></div></li>
               <li>
                 <form name="logout" method="POST" action="/logout" class="hidden"></form>
                 <a class="logout" href="javascript:;" onclick="document.forms.logout.submit();">Log Out</a>

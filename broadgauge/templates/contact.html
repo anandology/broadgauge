@@ -1,0 +1,13 @@
+{% from "forms.html" import render_field %}
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Contact Us</h1>
+
+  <form method="POST" class="form">
+    {{render_field(form.email, help="We need this to contact you back")}}
+    {{render_field(form.subject)}}
+    {{render_field(form.message, rows=5)}}
+    <button type="submit" class="btn btn-default">Send</button>
+  </form>
+{% endblock %}

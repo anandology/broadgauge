@@ -93,3 +93,8 @@ class OrgAddMemberForm(BaseForm):
 
 class WorkshopSetTrainerForm(BaseForm):
     email = StringField('E-mail Address', [validators.Required(), ValidUser(trainer=True)])
+
+class ContactForm(BaseForm):
+    email = StringField('Your E-mail Address', [validators.Required(), validators.Email()])
+    subject = StringField('Subject', [validators.Required()])
+    message = TextAreaField('Your Question', [validators.Required()])
