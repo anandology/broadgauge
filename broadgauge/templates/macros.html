@@ -16,7 +16,7 @@
     <h3 class="workshop-title"><a href="/workshops/{{ workshop.id }}">{{ workshop.title }}</a></h3>
     <div class="workshop-venue">
       <span class="octicon octicon-location"></span>
-      <span class="workshop-org">{{ org.name }}</span>,
+      <span class="workshop-org"><a href="/orgs/{{org.id}}">{{ org.name }}</a></span>,
       <span class="city">{{ org.city }}</span>
     </div>
     <div class="workshop-date">
