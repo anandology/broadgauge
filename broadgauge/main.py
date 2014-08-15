@@ -30,6 +30,7 @@ def load_config_from_env():
         'MAIL_PASSWORD',
         'MAIL_TLS',
         'FROM_ADDRESS',
+        'CONTACT_EMAIL'
     ]
 
     for k in keys:
