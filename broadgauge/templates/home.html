@@ -31,11 +31,15 @@
 <div class="container-wrapper-workshops">
 <div class="container">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <h2>Upcoming Workshops</h2>
-        {{ workshop_list(upcoming_workshops) }}
+        {{ workshop_list(pending_workshops) }}
     </div>    
-    <div class="col-md-6">
+    <div class="col-md-4">
+        <h2>Confirmed Workshops</h2>
+        {{ workshop_list(confirmed_workshops) }}
+    </div>
+    <div class="col-md-4">
         <h2>Completed Workshops</h2>
         {{ workshop_list(completed_workshops) }}
     </div>
