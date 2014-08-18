@@ -49,6 +49,6 @@ def inject_user():
         'get_flashed_messages': get_flashed_messages,
         'get_oauth_services': get_oauth_services,
         'get_config': web.config.get,
-        'get_pending_workshops': lambda: Workshop.findall(status='pending'),
-        'get_confirmed_workshops': lambda: Workshop.findall(status='confirmed'),
+        'get_pending_workshops': lambda: Workshop.findall(status='pending', order='date'),
+        'get_confirmed_workshops': lambda: Workshop.findall(status='confirmed', order='date'),
     }
