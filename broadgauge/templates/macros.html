@@ -23,16 +23,26 @@
       <span class="octicon octicon-calendar"></span>
       <span>{{ workshop.date.strftime("%d %b %Y") }}</span>
     </div>
-    {% if workshop.status == 'pending' and user and user.is_trainer() %}
-      {% if workshop.is_interested_trainer(user) %}
-        <form method="POST" action="/workshops/{{workshop.id}}">
-          <p>You have expressed interest to conduct this workshop.</p>
-          <button type="submit" class="btn btn-danger" name="action" value="withdraw-interest">Withdraw Interest</button>
-        </form>
-      {% else %}
-        <form method="POST" action="/workshops/{{workshop.id}}">
-          <button type="submit" class="btn btn-primary" name="action" value="express-interest">Express Interest</button>
-        </form>
+    {% if workshop.status == 'pending' %}
+      {% if user and user.is_trainer() %}
+        {% if workshop.is_interested_trainer(user) %}
+          <form method="POST" action="/workshops/{{workshop.id}}">
+            <p>You have expressed interest to conduct this workshop.</p>
+            <button type="submit" class="btn btn-danger" name="action" value="withdraw-interest">Withdraw Interest</button>
+          </form>
+        {% else %}
+          <form method="POST" action="/workshops/{{workshop.id}}">
+            <button type="submit" class="btn btn-primary" name="action" value="express-interest">Express Interest</button>
+          </form>
+        {% endif %}
+      {% endif %}
+      {% set trainers = workshop.get_interested_trainers() %}
+      {% if user and user.is_admin() and trainers %}
+        <div style="margin: 10px 0px;">
+        {% for t in trainers %}
+          <a href="/trainers/{{t.username}}" title="{{t.name}}" style="margin: 2px;"><img src="http://www.gravatar.com/avatar/{{t.email | md5}}?s=30&d=mm" class="img-rounded"></a>
+        {% endfor %}
+        </div>
       {% endif %}
     {% elif workshop.status == 'confirmed' %}
       <div class="workshop-label"><span style="color: #444; border: 1px solid #ccd; border-radius: 5px; padding: 2px; background: #dde;">Confirmed</span></div>
