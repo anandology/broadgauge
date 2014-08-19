@@ -18,9 +18,9 @@ class home:
         if user:
             raise web.seeother("/dashboard")
         else:
-            pending_workshops = Workshop.findall(status='pending')
-            upcoming_workshops = Workshop.findall(status='confirmed')
-            completed_workshops = Workshop.findall(status='completed')
+            pending_workshops = Workshop.findall(status='pending', order='date')
+            upcoming_workshops = Workshop.findall(status='confirmed', order='date')
+            completed_workshops = Workshop.findall(status='completed', order='date desc')
             return render_template("home.html",
                 pending_workshops=pending_workshops,
                 upcoming_workshops=upcoming_workshops,
