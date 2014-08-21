@@ -2,7 +2,7 @@ import web
 from ..models import User, Workshop
 from ..template import render_template
 from ..flash import flash
-from ..sendmail import sendmail
+from ..sendmail import sendmail_with_template
 from .. import account
 from .. import forms
 
@@ -69,7 +69,7 @@ class workshop_view:
             comment = workshop.add_comment(user, i.comment)
             subject = "New comment on {}".format(workshop.title)
             for u in workshop.get_followers():
-                sendmail("emails/comment-added.html",
+                sendmail_with_template("emails/comment-added.html",
                     to=u.email,
                     subject=subject,
                     workshop=workshop,

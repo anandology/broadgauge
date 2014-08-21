@@ -3,7 +3,7 @@ import web
 from .. import account
 from .. import forms
 from ..models import Workshop
-from ..sendmail import sendmail
+from ..sendmail import sendmail_with_template
 from ..template import render_template
 
 urls = (
@@ -49,7 +49,7 @@ class contact:
         i = web.input()
         form = forms.ContactForm(i)
         if form.validate():
-            sendmail("emails/contact.html",
+            sendmail_with_template("emails/contact.html",
                 to=web.config.contact_email,
                 subject=form.subject.data,
                 message=form.message.data,
