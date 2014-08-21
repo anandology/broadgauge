@@ -1,0 +1,15 @@
+{% from 'forms.html' import render_field %}
+{% extends "admin/base.html" %}
+{% block admin_body %}
+  <h2>Send Mail</h2>
+
+  <form method="POST" class="form">
+    {{render_field(form.to)}}
+    {{render_field(form.subject)}}
+    {{render_field(form.body)}}
+    <div class="form-group">
+      <button type="submit" name="action" value="send">Send</button>
+    </div>    
+  </form>
+{% endblock %}
+
