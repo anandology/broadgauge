@@ -106,6 +106,13 @@ class User(Model):
     def is_admin(self):
         return self['is_admin']
 
+    @classmethod
+    def find_all_org_members(cls):
+        result = get_db().query(
+            "SELECT distinct(users.*) FROM users" +
+            " JOIN organization_members on user_id=users.id")
+        return [cls(row) for row in result]
+
 class Organization(Model):
     TABLE = "organization"
 

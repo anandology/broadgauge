@@ -1,16 +1,19 @@
 import functools
 import web
+import markdown
 
 from ..template import render_template
 from ..models import User, Organization
 from ..flash import flash
 from .. import account
 from .. import forms
+from ..sendmail import sendmail
 
 urls = (
     "/admin", "admin",
     "/admin/orgs", "admin_orgs",
     "/admin/people", "admin_people",
+    "/admin/sendmail", "admin_sendmail",
 )
 
 def has_admins():
@@ -98,3 +101,33 @@ class admin_people:
             User.new(name=i.name, email=i.email, phone=i.phone, city=i.city, is_trainer=form.trainer.data)
             flash("Created new user successfully.")
             raise web.seeother("/admin/people")
+
+class admin_sendmail:
+    @admin_required
+    def GET(self):
+        form = forms.AdminSendmailForm()
+        return render_template("admin/sendmail.html", form=form)
+
+    @admin_required
+    def POST(self):
+        form = forms.AdminSendmailForm(web.input())
+        if form.validate():
+            self.do_sendmail(form.to.data, form.subject.data, form.body.data)
+            flash("Mail sent successfully.")
+            raise web.seeother("/admin")
+        else:
+            return render_template("admin/sendmail.html", form=form)
+
+    def do_sendmail(self, to, subject, message):
+        if to == "self":
+            user = account.get_current_user()
+            users = [user]
+        elif to == "trainers":
+            users = User.findall(is_trainer=True)
+        elif to == 'org-members':
+            users = User.find_all_org_members()
+
+        for u in users:
+            message_html = markdown.markdown(message)
+            message_html = message_html.replace('{{name}}', u.name)
+            sendmail(to_address=u.email, subject=subject, message_html=message_html)

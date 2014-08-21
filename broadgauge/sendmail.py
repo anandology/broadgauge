@@ -5,7 +5,7 @@ from envelopes import Envelope
 
 from .template import render_template
 
-logger = logging.get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 def sendmail_with_template(template, to, subject, headers=None, **kwargs):
     """

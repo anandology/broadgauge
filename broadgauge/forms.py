@@ -5,6 +5,7 @@ from wtforms import (
     Form,
     BooleanField, DateField, IntegerField, 
     StringField, TextAreaField,
+    SelectField,
     validators)
 
 from .models import User
@@ -98,3 +99,10 @@ class ContactForm(BaseForm):
     email = StringField('Your E-mail Address', [validators.Required(), validators.Email()])
     subject = StringField('Subject', [validators.Required()])
     message = TextAreaField('Your Question', [validators.Required()])
+
+class AdminSendmailForm(BaseForm):
+    to = SelectField("Send Mail To", choices=[('self', 'To yourself'),
+                                              ('trainers', 'All trainers'),
+                                              ('org-members', 'Members of all organizations')])
+    subject = StringField('Subject', [validators.Required()])
+    body = TextAreaField('Body', [validators.Required()])
