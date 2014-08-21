@@ -13,19 +13,16 @@
       {{ nav_pill("/admin", "Home", path) }}
       {{ nav_pill("/admin/orgs", "Orgs", path) }}
       {{ nav_pill("/admin/people", "People", path) }}
+      {{ nav_pill("/admin/sendmail", "Send Mail", path) }}
     </ul>
 {% endmacro %}
 
-{% block content_wrapper %}
+{% block container_head %}
 <div class="head head-admin">
   <div class="container">
     <h1><a href="/admin">Admin Center</a></h1>
     {{ navbar(request_path) }}
   </div>
-</div>
-<div class="container">
-    {% block admin_body %}
-    {% endblock %}
 </div>
 {% endblock %}
 

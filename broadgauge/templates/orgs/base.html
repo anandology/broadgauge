@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block container_head %}
+<div class="head head-org">
+  <div class="container">
+    <h1><a href="/orgs/{{org.id}}">{{ org.name }}</a></h1>
+
+    {% if user and (user.is_admin() or org.is_member(user)) %}
+      <a class="btn btn-primary pull-right" href="/orgs/{{org.id}}/new-workshop">Setup a new workshop</a>
+    {% endif %}
+    <div><span class="octicon octicon-location"></span> {{org.city}}</div>
+  </div>
+</div>
+{% endblock %}
