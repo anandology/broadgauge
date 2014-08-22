@@ -33,6 +33,22 @@ def activity_withdraw_interest(workshop, trainer):
         workshop=workshop.dict(),
         trainer=trainer.dict()))
 
+@signals.workshop_confirmed.connect
+def activity_workshop_confirmed(workshop, trainer):
+    record_activity('workshop-confirmed', dict(
+        workshop=workshop.dict(),
+        trainer=trainer.dict()))
+
+@signals.workshop_confirmed.connect
+def on_workshop_confirmed(workshop, trainer):
+    member_emails = [m.email for m, role in workshop.get_members()]
+    sendmail_with_template("emails/workshop_confirmed.html",
+        subject="{} workshop is confirmed".format(workshop['title']),
+        to=[trainer.email] + member_emails,
+        cc=web.config.get('contact_email'),
+        workshop=workshop,
+        trainer=trainer)
+
 @signals.trainer_signup.connect
 def trainer_welcome_email(trainer):
     sendmail_with_template("emails/trainers/welcome.html",

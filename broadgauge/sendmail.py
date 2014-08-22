@@ -7,7 +7,8 @@ from .template import render_template
 
 logger = logging.getLogger(__name__)
 
-def sendmail_with_template(template, to, subject, headers=None, **kwargs):
+def sendmail_with_template(template, to, subject,
+        cc=None, bcc=None, headers=None, **kwargs):
     """
     Sends an email with the selected html template.
     html templates can be found inside the broadguage/templates
@@ -46,12 +47,15 @@ def sendmail_with_template(template, to, subject, headers=None, **kwargs):
                     subject=subject, 
                     message_html=html,
                     headers=headers,
+                    cc=cc,
+                    bcc=bcc,
                     **kwargs)
 
 
 def sendmail(to_address, subject, 
         message_text=None, message_html=None, 
-        reply_to=None, headers=None, 
+        cc=None, bcc=None, reply_to=None,
+        headers=None,
         **kwargs):
     if not web.config.get('smtp_server'):
         logger.warn("smtp_server not configured, mail won't be sent.")
@@ -67,7 +71,9 @@ def sendmail(to_address, subject,
         subject=subject,
         html_body=message_html,
         text_body=message_text,
-        headers=headers
+        headers=headers,
+        cc_addr=cc,
+        bcc_addr=bcc,
     )
     server = web.config.smtp_server
     port = int(web.config.get('smtp_port', 25))
