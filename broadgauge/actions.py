@@ -41,7 +41,8 @@ def activity_workshop_confirmed(workshop, trainer):
 
 @signals.workshop_confirmed.connect
 def on_workshop_confirmed(workshop, trainer):
-    member_emails = [m.email for m, role in workshop.get_members()]
+    org = workshop.get_org()
+    member_emails = [m.email for m, role in org.get_members()]
     sendmail_with_template("emails/workshop_confirmed.html",
         subject="{} workshop is confirmed".format(workshop['title']),
         to=[trainer.email] + member_emails,
