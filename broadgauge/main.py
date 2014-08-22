@@ -4,6 +4,8 @@ import web
 import yaml
 from . import default_settings
 
+# load actions
+from . import actions
 
 def load_default_config():
     # take all vars defined in default_config

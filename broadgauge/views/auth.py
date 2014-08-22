@@ -4,10 +4,10 @@ import json
 from .. import account
 from .. import oauth
 from .. import forms
-from ..sendmail import sendmail
 from ..flash import flash
 from ..models import User, Organization
 from ..template import render_template
+from ..import signals
 
 urls = (
     "/login", "login",
@@ -138,10 +138,7 @@ class trainer_signup:
             is_trainer=True)
         account.set_login_cookie(user.email)
         flash("Thank you for signing up as a trainer!")
-        sendmail("emails/trainers/welcome.html",
-            subject="Welcome to Python Express",
-            to=user.email,
-            trainer=user)
+        signals.trainer_signup.send(trainer=user)
         raise web.seeother("/dashboard")
 
     def find_user(self, email):
@@ -165,6 +162,7 @@ class org_signup(trainer_signup):
         org.add_member(user, i.role)
         account.set_login_cookie(user.email)
         flash("Thank you for registering your organization with Python Express!")
+        signals.org_signup.send(org=org)
         raise web.seeother("/orgs/{}".format(org.id))
 
 

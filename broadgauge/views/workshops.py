@@ -2,9 +2,9 @@ import web
 from ..models import User, Workshop
 from ..template import render_template
 from ..flash import flash
-from ..sendmail import sendmail_with_template
 from .. import account
 from .. import forms
+from .. import signals
 
 
 urls = (
@@ -67,14 +67,7 @@ class workshop_view:
             return
         if user:
             comment = workshop.add_comment(user, i.comment)
-            subject = "New comment on {}".format(workshop.title)
-            for u in workshop.get_followers():
-                sendmail_with_template("emails/comment-added.html",
-                    to=u.email,
-                    subject=subject,
-                    workshop=workshop,
-                    user=u,
-                    comment=comment)
+            signals.new_comment.send(comment)
             flash("Done! Your comment has been added to this workshop.")
             raise web.seeother("/workshops/{}".format(workshop.id))
 
@@ -104,6 +97,7 @@ class workshop_edit:
                                org=org, workshop=workshop, form=form)
 
     POST = GET
+
 
 class workshop_set_trainer:
     def GET(self, workshop_id):

@@ -270,3 +270,6 @@ class Comment(Model):
 
     def get_author(self):
         return User.find(id=self.author_id)
+
+    def get_workshop(self):
+        return Workshop.find(id=self.author_id)
