@@ -5,7 +5,9 @@ from ..flash import flash
 from .. import account
 from .. import forms
 from .. import signals
+import logging
 
+logger = logging.getLogger(__name__)
 
 urls = (
     "/workshops/(\d+)", "workshop_view",
@@ -37,9 +39,12 @@ class workshop_view:
             return self.POST_express_interest(workshop, i)
         elif i.action == "withdraw-interest":
             return self.POST_withdraw_interest(workshop, i)
+        elif i.action == "confirm-trainer":
+            return self.POST_confirm_trainer(workshop, i)
         elif i.action == "add-comment":
             return self.POST_add_comment(workshop, i)
         else:
+            logger.warn("workshop_view - invalid action value: %s", i.action)
             return render_template("workshops/view.html", workshop=workshop)
 
     def POST_express_interest(self, workshop, i):
@@ -59,6 +64,24 @@ class workshop_view:
             signals.workshop_withdraw_interest.send(workshop, trainer=user)
             # TODO: Improve this message
             flash("Done! Your interest to conduct the workshop has been cancelled.")
+            raise web.seeother("/workshops/{}".format(workshop.id))
+        else:
+            return render_template("workshops/view.html", workshop=workshop)
+
+    def POST_confirm_trainer(self, workshop, i):
+        user = account.get_current_user()
+        org = workshop.get_org()
+        if user and (user.is_admin() or org.is_member(user)):
+            trainer = User.find(username=i.get('trainer'))
+            if not trainer or not workshop.is_interested_trainer(trainer):
+                flash(
+                    message='Sorry, unable to confirm the trainer. Please try again.',
+                    category='error')
+                raise web.seeother("/workshops/{}".format(workshop.id))
+
+            workshop.confirm_trainer(trainer)
+            signals.workshop_confirmed.send(workshop, trainer=user)
+            flash("Done! Confirmed {} as trainer for this workshop.".format(trainer.name))
             raise web.seeother("/workshops/{}".format(workshop.id))
         else:
             return render_template("workshops/view.html", workshop=workshop)

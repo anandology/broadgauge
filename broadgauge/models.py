@@ -220,6 +220,9 @@ class Workshop(Model):
     def set_trainer(self, trainer):
         self.update(trainer_id=trainer.id, status='confirmed')
 
+    def confirm_trainer(self, trainer):
+        self.set_trainer(trainer)
+
     def get_org(self):
         return Organization.find(id=self.org_id)
 

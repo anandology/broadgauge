@@ -2,12 +2,23 @@
 
 {% macro render_trainer(t) %}
   <div>
-    <div style="width: 30px; float: left;">
-      <img src="http://www.gravatar.com/avatar/{{t.email | md5}}?s=30&d=mm" class="img-thumbnail">
+    <div style="width: 40px; float: left;">
+      <img src="http://www.gravatar.com/avatar/{{t.email | md5}}?s=40&d=mm" class="img-thumbnail">
     </div>
     <div style="padding-left: 10px; float: left;">
       <div><a href="/trainers/{{t.username}}"><strong>{{t.name}}</strong></a></div>
+      <div>{{t.city}}</div>
     </div>
+    {% if user and (org.is_member(user) or user.is_admin()) %}
+      {% if workshop.status == 'pending' %}
+        <div style="float: left; padding-left: 20px;">
+          <form method="POST">
+            <input type="hidden" name="trainer" value="{{t.username}}"/>
+            <button class="btn btn-primary" type="submit" name="action" value="confirm-trainer">Confirm this trainer</button>
+          </form>
+        </div>
+      {% endif %}
+    {% endif %}
     <div class="clearfix"></div>
   </div>
 {% endmacro %}
