@@ -3,7 +3,7 @@ import web
 import markdown
 
 from ..template import render_template
-from ..models import User, Organization
+from ..models import User, Organization, Activity
 from ..flash import flash
 from .. import account
 from .. import forms
@@ -14,6 +14,7 @@ urls = (
     "/admin/orgs", "admin_orgs",
     "/admin/people", "admin_people",
     "/admin/sendmail", "admin_sendmail",
+    "/admin/activity", "admin_activity",
 )
 
 def has_admins():
@@ -131,3 +132,8 @@ class admin_sendmail:
             message_html = markdown.markdown(message)
             message_html = message_html.replace('{{name}}', u.name)
             sendmail(to_address=u.email, subject=subject, message_html=message_html)
+
+class admin_activity:
+    def GET(self):
+        activity = Activity.get_recent_activity(limit=50)
+        return render_template("admin/activity.html", activity=activity)

@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+{% block content %}
+  <h2>Activity</h2>
+  <table class="table">
+    {% for event in activity %}
+    <tr>
+        <td class="when">{{event.tstamp | datestr}}</td>
+        <td>{{render_event(event)}}</td>
+    {% endfor %}
+  </table>
+  <style type="text/css">
+    td.when {
+      max-width: 150px !important;
+    }
+  </style>
+{% endblock %}
+
+{% macro render_event(event) %}
+  {% if event.type == "trainer-signup" %}
+    {% set trainer = event.info %}
+    <a href="/trainers/{{ trainer['username'] }}">{{trainer['name']}}</a>
+    signed up as a trainer.
+  {% elif event.type == "workshop-express-interest" %}
+    {% set trainer = event.info['trainer'] %}
+    {% set workshop = event.info['workshop'] %}
+    <a href="/trainers/{{ trainer['username'] }}">{{trainer['name']}}</a>
+    expressed interest to conduct 
+    <a href="/workshops/{{ workshop['id'] }}">{{workshop['title']}}</a>
+    workshop.
+  {% elif event.type == "workshop-withdraw-interest" %}
+    {% set trainer = event.info['trainer'] %}
+    {% set workshop = event.info['workshop'] %}
+    <a href="/trainers/{{ trainer['username'] }}">{{trainer['name']}}</a>
+    cancelled interest to conduct 
+    <a href="/workshops/{{ workshop['id'] }}">{{workshop['title']}}</a>
+    workshop.
+  {% endif %}
+{% endmacro %}
+

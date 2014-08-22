@@ -1,6 +1,8 @@
 import web
 import string
 import random
+import json
+import datetime
 
 @web.memoize
 def get_db():
@@ -65,6 +67,22 @@ class Model(web.storage):
 
     def __hash__(self):
         return self.id
+
+    def dict(self):
+        d = {}
+        rules = {
+            datetime.datetime: datetime.datetime.isoformat,
+            datetime.date: datetime.date.isoformat
+        }
+        for k, v in self.items():
+            if k.startswith("_"):
+                continue
+            for cls, converter in rules.items():
+                if isinstance(v, cls):
+                    v = converter(v)
+                    break
+            d[k] = v
+        return d
 
 
 class User(Model):
@@ -273,3 +291,19 @@ class Comment(Model):
 
     def get_workshop(self):
         return Workshop.find(id=self.author_id)
+
+class Activity(Model):
+    TABLE = "activity"
+
+    @classmethod
+    def get_recent_activity(cls, limit=50, offset=0):
+        return cls.findall(limit=limit, offset=offset, order='tstamp desc')
+
+    @classmethod
+    def new(cls, type, user, info):
+        id = get_db().insert("activity",
+            type=type,
+            user_id=user and user.id,
+            user_name=user and user.name,
+            info=json.dumps(info))
+        return Activity.find(id=id)

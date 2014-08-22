@@ -46,6 +46,7 @@ class workshop_view:
         user = account.get_current_user()
         if user and user.is_trainer():
             workshop.record_interest(user)
+            signals.workshop_express_interest.send(workshop, trainer=user)
             flash("Thank you for experessing interest to conduct this workshop.")
             raise web.seeother("/workshops/{}".format(workshop.id))
         else:
@@ -55,6 +56,7 @@ class workshop_view:
         user = account.get_current_user()
         if user and user.is_trainer():
             workshop.cancel_interest(user)
+            signals.workshop_withdraw_interest.send(workshop, trainer=user)
             # TODO: Improve this message
             flash("Done! Your interest to conduct the workshop has been cancelled.")
             raise web.seeother("/workshops/{}".format(workshop.id))

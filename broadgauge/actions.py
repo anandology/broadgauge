@@ -1,7 +1,37 @@
 """Actions triggered on various signals.
 """
-from . import signals
+import web
+from . import account, signals
 from .sendmail import sendmail_with_template
+from .models import Activity
+
+def record_activity(name, info):
+    user = account.get_current_user()
+    Activity.new(name, user, info)
+
+@signals.trainer_signup.connect
+def activity_trainer_signup(trainer):
+    record_activity('trainer-signup', trainer.dict())
+
+@signals.org_signup.connect
+def activity_org_signup(org):
+    record_activity('org-signup', org.dict())
+
+@signals.new_workshop.connect
+def activity_new_workshop(workshop):
+    record_activity('new-workshop', workshop.dict())
+
+@signals.workshop_express_interest.connect
+def activity_express_interest(workshop, trainer):
+    record_activity('workshop-express-interest', dict(
+        workshop=workshop.dict(),
+        trainer=trainer.dict()))
+
+@signals.workshop_withdraw_interest.connect
+def activity_withdraw_interest(workshop, trainer):
+    record_activity('workshop-withdraw-interest', dict(
+        workshop=workshop.dict(),
+        trainer=trainer.dict()))
 
 @signals.trainer_signup.connect
 def trainer_welcome_email(trainer):
@@ -10,9 +40,10 @@ def trainer_welcome_email(trainer):
         to=trainer.email,
         trainer=trainer)
 
+
 @signals.org_signup.connect
 def org_welcome_email(org):
-    print "new org"
+    pass
 
 
 @signals.new_workshop.connect

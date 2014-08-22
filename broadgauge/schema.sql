@@ -55,3 +55,15 @@ create table comment (
     comment text,
     created timestamp default (current_timestamp at time zone 'UTC')
 );
+
+create table activity (
+    id serial primary key,
+    type text,
+    info JSON,
+    user_id integer references users,
+    user_name text,
+    tstamp timestamp default (current_timestamp at time zone 'UTC')
+);
+
+create index activity_type_idx on activity(type);
+create index activity_tstamp_idx on activity(tstamp);
