@@ -293,7 +293,7 @@ class Comment(Model):
         return User.find(id=self.author_id)
 
     def get_workshop(self):
-        return Workshop.find(id=self.author_id)
+        return Workshop.find(id=self.workshop_id)
 
 class Activity(Model):
     TABLE = "activity"
