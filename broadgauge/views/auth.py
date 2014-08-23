@@ -138,7 +138,7 @@ class trainer_signup:
             is_trainer=True)
         account.set_login_cookie(user.email)
         flash("Thank you for signing up as a trainer!")
-        signals.trainer_signup.send(trainer=user)
+        signals.trainer_signup.send(user)
         raise web.seeother("/dashboard")
 
     def find_user(self, email):
@@ -162,7 +162,7 @@ class org_signup(trainer_signup):
         org.add_member(user, i.role)
         account.set_login_cookie(user.email)
         flash("Thank you for registering your organization with Python Express!")
-        signals.org_signup.send(org=org)
+        signals.org_signup.send(org)
         raise web.seeother("/orgs/{}".format(org.id))
 
 
