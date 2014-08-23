@@ -1,4 +1,5 @@
 import web
+import datetime
 
 from .. import account
 from .. import forms
@@ -21,6 +22,9 @@ class home:
             pending_workshops = Workshop.findall(status='pending', order='date')
             upcoming_workshops = Workshop.findall(status='confirmed', order='date')
             completed_workshops = Workshop.findall(status='completed', order='date desc')
+
+            pending_workshops = [w for w in pending_workshops if w.date >= datetime.date.today()]
+
             return render_template("home.html",
                 pending_workshops=pending_workshops,
                 upcoming_workshops=upcoming_workshops,
