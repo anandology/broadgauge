@@ -96,7 +96,7 @@
 
 {% if workshop.status == 'pending' %}
   {{render_interested_trainers()}}
-{% elif workshop.status == 'confirmed' %}
+{% elif workshop.status in ['confirmed', 'completed'] %}
   <h3>Trainer</h3>
   {{render_trainer(workshop.get_trainer())}}
 {% endif %}
