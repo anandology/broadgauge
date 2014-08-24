@@ -36,8 +36,12 @@ class dashboard:
         user = account.get_current_user()
         if not user:
             raise web.seeother("/")
+        pending_workshops = Workshop.findall(status='pending', order='date')
+        pending_workshops = [w for w in pending_workshops if w.date >= datetime.date.today()]
+
         upcoming_workshops = Workshop.findall(status='confirmed', trainer_id=user.id)
         return render_template("dashboard.html",
+                               pending_workshops=pending_workshops,
                                upcoming_workshops=upcoming_workshops)
 
 
