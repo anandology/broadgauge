@@ -32,7 +32,7 @@
   </div>
   <div class="col-md-6 col-sm-12">
     <h3>Recent Workshops</h3>
-    <em>{{trainer.name}} has not conducted any workshops so far.</em>
+    {{ macros.workshop_list(completed_workshops) }}
   </div>
 </div>
 {% endblock %}
