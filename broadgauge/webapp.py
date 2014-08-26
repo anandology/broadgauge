@@ -21,6 +21,7 @@ def load_all_views():
     from .views import auth
     from .views import home
     from .views import orgs
+    from .views import about
     from .views import trainers
     from .views import workshops
 
@@ -28,6 +29,7 @@ def load_all_views():
     add_urls(auth)
     add_urls(home)
     add_urls(orgs)
+    add_urls(about)
     add_urls(trainers)
     add_urls(workshops)
 

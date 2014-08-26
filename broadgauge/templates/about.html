@@ -1,0 +1,9 @@
+{% from "forms.html" import render_field %}
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>About PythonExpress</h1>
+
+{{content|markdown}}
+
+{% endblock %}
