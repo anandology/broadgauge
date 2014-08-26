@@ -38,7 +38,7 @@ class org_new_member:
     def GET(self, id):
         org = get_org(id)
         if not self.can_update(org):
-            return render_template("permission_denied")
+            return render_template("permission_denied.html")
         else:
             form = forms.OrgAddMemberForm()
             return render_template("orgs/new-member.html", org=org, form=form)
@@ -46,7 +46,7 @@ class org_new_member:
     def POST(self, id):
         org = get_org(id)
         if not self.can_update(org):
-            return render_template("permission_denied")
+            return render_template("permission_denied.html")
         else:
             i = web.input()
             form = forms.OrgAddMemberForm(i)
