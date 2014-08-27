@@ -1,7 +1,7 @@
 {% extends "orgs/view.html" %}
 
 {% macro render_trainer(t) %}
-  <div>
+  <div style="margin: 10px 0px;">
     <div style="width: 40px; float: left;">
       <img src="http://www.gravatar.com/avatar/{{t.email | md5}}?s=40&d=mm" class="img-thumbnail">
     </div>
@@ -97,8 +97,10 @@
 {% if workshop.status == 'pending' %}
   {{render_interested_trainers()}}
 {% elif workshop.status in ['confirmed', 'completed'] %}
-  <h3>Trainer</h3>
-  {{render_trainer(workshop.get_trainer())}}
+  <h3>Trainers</h3>
+  {% for t in workshop.get_trainers() %}
+    {{ render_trainer(t) }}
+  {% endfor %}
 {% endif %}
 
 <div class="comments">

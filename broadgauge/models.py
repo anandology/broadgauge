@@ -217,6 +217,20 @@ class Workshop(Model):
     def get_trainer(self):
         return self.trainer_id and User.find(id=self.trainer_id)
 
+    def get_trainers(self):
+        """Returns all the trainers conducting this workshop.
+        """
+        trainers = set()
+        if self.trainer_id:
+            trainers.add(self.trainer_id)
+
+        result = get_db().where(
+            "workshop_trainers",
+            workshop_id=self.id,
+            status='confirmed')
+        trainers.update(row.trainer_id for row in result)
+        return [User.find(id=id) for id in trainers]
+
     def set_trainer(self, trainer):
         self.update(trainer_id=trainer.id, status='confirmed')
 
