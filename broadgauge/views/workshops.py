@@ -80,7 +80,7 @@ class workshop_view:
                 raise web.seeother("/workshops/{}".format(workshop.id))
 
             workshop.confirm_trainer(trainer)
-            signals.workshop_confirmed.send(workshop, trainer=user)
+            signals.workshop_confirmed.send(workshop, trainer=trainer)
             flash("Done! Confirmed {} as trainer for this workshop.".format(trainer.name))
             raise web.seeother("/workshops/{}".format(workshop.id))
         else:
