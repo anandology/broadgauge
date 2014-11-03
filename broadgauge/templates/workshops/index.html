@@ -1,0 +1,20 @@
+{% from "macros.html" import workshop_list %}
+{% extends "base.html" %}
+{% block content %}
+  <h1>Workshops</h1>
+
+  <div class="row">
+    <div class="col-md-4">
+        <h2>Upcoming</h2>
+        {{ workshop_list(pending_workshops) }}
+    </div>    
+    <div class="col-md-4">
+        <h2>Confirmed</h2>
+        {{ workshop_list(upcoming_workshops) }}
+    </div>
+    <div class="col-md-4">
+        <h2>Completed</h2>
+        {{ workshop_list(completed_workshops) }}
+    </div>
+  </div>
+{% endblock %}

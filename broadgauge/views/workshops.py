@@ -6,10 +6,12 @@ from .. import account
 from .. import forms
 from .. import signals
 import logging
+import datetime
 
 logger = logging.getLogger(__name__)
 
 urls = (
+    "/workshops", "workshop_list",
     "/workshops/(\d+)", "workshop_view",
     "/workshops/(\d+)/edit", "workshop_edit",
     "/workshops/(\d+)/set-trainer", "workshop_set_trainer",
@@ -25,6 +27,18 @@ def get_workshop(id):
     if not workshop:
         raise web.notfound()
     return workshop
+
+class workshop_list:
+    def GET(self):
+        pending_workshops = Workshop.findall(status='pending', order='date')
+        upcoming_workshops = Workshop.findall(status='confirmed', order='date')
+        completed_workshops = Workshop.findall(status='completed', order='date desc')
+        pending_workshops = [w for w in pending_workshops if w.date >= datetime.date.today()]
+
+        return render_template("workshops/index.html",
+            pending_workshops=pending_workshops,
+            upcoming_workshops=upcoming_workshops,
+            completed_workshops=completed_workshops)
 
 
 class workshop_view:
